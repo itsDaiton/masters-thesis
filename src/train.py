@@ -58,11 +58,11 @@ def linear_probe(model, train_loader: DataLoader, val_loader: DataLoader, config
         avg_val_loss = val_loss / len(val_loader)
         avg_val_accuracy = val_correct / val_samples
         
-        print(f"Epochs: {epoch + 1}/{config.num_epochs} 
+        print(f"""Epochs: {epoch + 1}/{config.num_epochs} 
               | train_loss: {avg_train_loss:.4f} 
               | train_acc: {avg_train_accuracy:.4f} 
               | val_loss: {avg_val_loss:.4f} 
-              | val_acc: {avg_val_accuracy:.4f}")
+              | val_acc: {avg_val_accuracy:.4f}""")
 
 def evaluate(model, test_loader: DataLoader, config):  
     model.to(config.device)
@@ -90,4 +90,4 @@ def evaluate(model, test_loader: DataLoader, config):
     avg_test_loss = test_loss / len(test_loader)
     avg_test_accuracy = test_correct / test_samples
 
-    print(f"Test Loss: {avg_test_loss:.4f}, Test Accuracy: {avg_test_accuracy:.4f}")
+    print(f"test_loss: {avg_test_loss:.4f} | test_acc: {avg_test_accuracy:.4f}")
