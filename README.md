@@ -1,2 +1,20 @@
-# masters-thesis
-Placeholder repository for my master's thesis code and experiment results (WIP).
+# Exploration and Comparison of Transformers for Image Classification
+
+Repository for working on my master's thesis (WIP).
+
+⚠️Content of this repository is highly experimental.⚠️
+
+## Description
+TBD
+
+## Built With
+TBD
+
+## Models
+TBD
+
+## Results
+TBD
+
+## Authors
+- David Poslušný
