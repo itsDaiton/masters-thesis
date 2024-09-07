@@ -13,3 +13,7 @@ class ImageClassificationDataset(Dataset):
         image = item['image']
         processed_image = self.processor(images=image, return_tensors='pt')['pixel_values'].squeeze()
         return processed_image, item['label']
+    
+    def get_num_clasess(self):
+        labels = [item['label'] for item in self.dataset]
+        return len(set(labels))
