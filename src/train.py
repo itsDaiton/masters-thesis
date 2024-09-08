@@ -43,7 +43,7 @@ def linear_probe(model, train_loader: DataLoader, val_loader: DataLoader, config
         val_samples = 0
 
         with torch.no_grad():
-            for batch in val_loader:
+            for batch in tqdm(val_loader):
                 images, labels = batch
                 images, labels = images.to(config.device), labels.to(config.device)
                 
@@ -111,7 +111,7 @@ def fine_tune_with_teacher(student, teacher, train_loader: DataLoader, val_loade
         val_samples = 0
         
         with torch.no_grad():
-            for batch in val_loader:
+            for batch in tqdm(val_loader):
                 images, labels = batch
                 images, labels = images.to(config.device), labels.to(config.device)
                 
@@ -171,7 +171,7 @@ def fine_tune_teacher(model, train_loader: DataLoader, val_loader: DataLoader, c
         val_samples = 0
         
         with torch.no_grad():
-            for batch in val_loader:
+            for batch in tqdm(val_loader):
                 images, labels = batch
                 images, labels = images.to(config.device), labels.to(config.device)
                                 

@@ -1,4 +1,4 @@
-from transformers import ViTForImageClassification, DeiTForImageClassificationWithTeacher, AutoModelForImageClassification
+from transformers import ViTForImageClassification, DeiTForImageClassificationWithTeacher, RegNetForImageClassification
 import torch.nn as nn
 
 class ViT(nn.Module):
@@ -36,7 +36,7 @@ class RegNet(nn.Module):
     
     def __init__(self, num_classes, model_name='facebook/regnet-x-040'):
         super(RegNet, self).__init__()
-        self.regnet = AutoModelForImageClassification.from_pretrained(
+        self.regnet = RegNetForImageClassification.from_pretrained(
             model_name,
             num_labels=num_classes,
             ignore_mismatched_sizes=True,
