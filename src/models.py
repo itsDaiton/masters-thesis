@@ -1,4 +1,4 @@
-from transformers import ViTForImageClassification
+from transformers import ViTForImageClassification, DeiTForImageClassificationWithTeacher
 import torch.nn as nn
 
 class ViT(nn.Module):
@@ -15,3 +15,20 @@ class ViT(nn.Module):
     def forward(self, x):
         outputs = self.backbone(x)
         return outputs.logits
+    
+class DeiT(nn.Module):
+    """ Data-efficient Image Transformer (DeiT) model pre-trained on ImageNet-1k. """
+    
+    def __init__(self, num_classes, model_name='facebook/deit-small-distilled-patch16-224'):
+        super(DeiT, self).__init__()
+        self.backbone = DeiTForImageClassificationWithTeacher.from_pretrained(
+            model_name, 
+            num_labels=num_classes,
+            ignore_mismatched_sizes=True,
+        )
+        
+    def forward(self, x):
+        outputs = self.backbone(x)   
+        class_logits = outputs.logits
+        distillation_logits = outputs.distillation_logits
+        return class_logits, distillation_logits
