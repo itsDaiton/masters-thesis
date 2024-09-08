@@ -212,7 +212,7 @@ def evaluate(model, test_loader: DataLoader, config):
             loss = criterion(outputs, labels)
             
             test_loss += loss.item()
-            ttest_correct += (predictions == labels).sum().item()
+            test_correct += (predictions == labels).sum().item()
             test_samples += labels.size(0)
     
     avg_test_loss = test_loss / len(test_loader)
