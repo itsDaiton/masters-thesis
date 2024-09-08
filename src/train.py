@@ -86,7 +86,8 @@ def fine_tune_with_teacher(student, teacher, train_loader: DataLoader, val_loade
             
             with torch.no_grad():
                 teacher_outputs = teacher(images)
-                _, teacher_predictions = torch.max(teacher_outputs, 1)
+                teacher_logits = teacher_outputs.logits
+                _, teacher_predictions = torch.max(teacher_logits, 1)
                 
             student_outputs = student(images)
             loss = 0.5 * criterion(student_outputs, labels) + 0.5 * criterion(student_outputs, teacher_predictions)        
@@ -116,7 +117,8 @@ def fine_tune_with_teacher(student, teacher, train_loader: DataLoader, val_loade
                 images, labels = images.to(config.device), labels.to(config.device)
                 
                 teacher_outputs = teacher(images)
-                _, teacher_predictions = torch.max(teacher_outputs, 1)
+                teacher_logits = teacher_outputs.logits
+                _, teacher_predictions = torch.max(teacher_logits, 1)
                 students_outputs = student(images)
                 loss = 0.5 * criterion(students_outputs, labels) + 0.5 * criterion(students_outputs, teacher_predictions)
                 
@@ -153,8 +155,9 @@ def fine_tune_teacher(model, train_loader: DataLoader, val_loader: DataLoader, c
             images, labels = images.to(config.device), labels.to(config.device)    
             optimizer.zero_grad()         
             outputs = model(images)
-            _, predictions = torch.max(outputs, 1)
-            loss = criterion(outputs, labels)
+            logits = outputs.logits
+            _, predictions = torch.max(logits, 1)
+            loss = criterion(logits, labels)
             loss.backward()
             optimizer.step() 
                   
