@@ -29,9 +29,7 @@ class DeiT(nn.Module):
         
     def forward(self, x):
         outputs = self.backbone(x)   
-        class_logits = outputs.logits
-        distillation_logits = outputs.distillation_logits
-        return class_logits, distillation_logits
+        return outputs.logits
     
 class RegNet(nn.Module):
     """ RegNetX-4GF model pre-trained on ImageNet-1k. This model serves as a teacher model for DeiT. """
@@ -45,4 +43,5 @@ class RegNet(nn.Module):
         )
         
     def forward(self, x):
-        return self.regnet(x)
+        outputs = self.regnet(x)
+        return outputs.logits
