@@ -4,6 +4,7 @@ class ImageClassificationDataset(Dataset):
     def __init__(self, dataset, processor):
         self.dataset = dataset
         self.processor = processor
+        self.num_classes = self.dataset.features['label'].num_classes
         
     def __len__(self):
         return len(self.dataset)
@@ -13,7 +14,3 @@ class ImageClassificationDataset(Dataset):
         image = item['image']
         processed_image = self.processor(images=image, return_tensors='pt')['pixel_values'].squeeze()
         return processed_image, item['label']
-    
-    def get_num_clasess(self):
-        labels = [item['label'] for item in self.dataset]
-        return len(set(labels))
