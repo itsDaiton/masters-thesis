@@ -1,6 +1,5 @@
 from transformers import ViTForImageClassification, DeiTForImageClassificationWithTeacher, AutoModelForImageClassification
 import torch.nn as nn
-import timm
 
 class ViT(nn.Module):
     """ Vision Transformer (ViT) model pre-trained on ImageNet-1k. """
@@ -44,7 +43,6 @@ class RegNet(nn.Module):
             num_labels=num_classes,
             ignore_mismatched_sizes=True,
         )
-        #self.regnet.fc = nn.Linear(self.regnet.fc.in_features, num_classes)
         
     def forward(self, x):
         return self.regnet(x)
