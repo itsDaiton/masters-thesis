@@ -40,6 +40,7 @@ class RegNet(nn.Module):
     def __init__(self, num_classes):
         super(RegNet, self).__init__()
         self.regnet = regnet_y_16gf(weights=RegNet_Y_16GF_Weights.DEFAULT)
+        self.regnet.fc = nn.Linear(self.regnet.fc.in_features, num_classes)
         
     def forward(self, x):
         return self.regnet(x)
