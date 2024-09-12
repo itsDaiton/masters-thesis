@@ -5,10 +5,10 @@ model_names = {
     'RegNet': 'facebook/regnet-x-040',
 }
 
-def get_last_layer(model, model_type):
-    if model_type == 'deit':
+def get_last_layer(model, architecture):
+    if architecture == 'deit':
         return model.backbone.cls_classifier
-    elif model_type == 'regnet':
+    elif architecture == 'regnet':
         return model.backbone.classifier[1]
     else:
         return model.backbone.classifier
