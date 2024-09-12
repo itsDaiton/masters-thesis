@@ -1,4 +1,4 @@
-from transformers import ViTForImageClassification, DeiTForImageClassificationWithTeacher, RegNetForImageClassification
+from transformers import ViTForImageClassification, DeiTForImageClassificationWithTeacher, RegNetForImageClassification, SwinForImageClassification
 import torch.nn as nn
 
 class ViT(nn.Module):
@@ -45,3 +45,20 @@ class RegNet(nn.Module):
     def forward(self, x):
         outputs = self.regnet(x)
         return outputs.logits
+    
+class Swin(nn.Module):
+    """ Swin Transformer model pre-trained on ImageNet-1k. """
+    
+    def __init__(self, num_classes, model_name='microsoft/swin-tiny-patch4-window7-224'):
+        super(Swin, self).__init__()
+        self.backbone = SwinForImageClassification.from_pretrained(
+            model_name, 
+            num_labels=num_classes,
+            ignore_mismatched_sizes=True,
+        )
+        self.id2label = {i: f"label_{i}" for i in range(num_classes)}
+        self.label2id = {f"label_{i}": i for i in range(num_classes)}
+        
+    def forward(self, x):
+        outputs = self.backbone(x)
+        return outputs.logits  
