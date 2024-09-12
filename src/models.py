@@ -43,7 +43,7 @@ class RegNet(nn.Module):
         )
         
     def forward(self, x):
-        outputs = self.regnet(x)
+        outputs = self.backbone(x)
         return outputs.logits
     
 class Swin(nn.Module):
