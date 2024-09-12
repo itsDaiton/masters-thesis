@@ -36,7 +36,7 @@ class RegNet(nn.Module):
     
     def __init__(self, num_classes, model_name='facebook/regnet-x-040'):
         super(RegNet, self).__init__()
-        self.regnet = RegNetForImageClassification.from_pretrained(
+        self.backbone = RegNetForImageClassification.from_pretrained(
             model_name,
             num_labels=num_classes,
             ignore_mismatched_sizes=True,
