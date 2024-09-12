@@ -5,13 +5,13 @@ from utils.models_utils import get_last_layer
 from utils.train_utils import print_training_results
 
     
-def train(model, train_loader, val_loader, config, mode='fine_tuning'):
+def train(model, train_loader, val_loader, config, model_type, mode='fine_tuning'):
     model.to(config.device)
     
     if mode == 'linear_probing':
         for param in model.parameters():
             param.requires_grad = False
-        for param in get_last_layer(model).parameters():
+        for param in get_last_layer(model, model_type).parameters():
             param.requires_grad = True
     else:
         for param in model.parameters():
