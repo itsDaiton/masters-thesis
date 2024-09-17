@@ -1,5 +1,8 @@
-from transformers import ViTForImageClassification, DeiTForImageClassificationWithTeacher, RegNetForImageClassification, SwinForImageClassification
+from transformers import ViTForImageClassification, DeiTForImageClassificationWithTeacher, RegNetForImageClassification, SwinForImageClassification, CLIPForImageClassification
+from transformers import CLIPModel
+import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 class ViT(nn.Module):
     """ Vision Transformer (ViT) model pre-trained on ImageNet-1k. """
@@ -62,3 +65,14 @@ class Swin(nn.Module):
     def forward(self, x):
         outputs = self.backbone(x)
         return outputs.logits  
+    
+class CLIP(nn.Module):
+    """ CLIP model pre-trained on YFCC100M dataset. """
+    
+    def __init__(self, model_name='openai/clip-vit-base-patch16'):
+        super(CLIP, self).__init__()
+        self.model = CLIPModel.from_pretrained(model_name)
+        
+    def forward(self, images, texts):
+        outputs = self.model(pixel_values=images, input_ids=texts)
+        return outputs.logits_per_image 
