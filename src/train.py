@@ -31,7 +31,7 @@ def train_model(model, train_loader, val_loader, config, architecture, fine_tune
         
         for batch in tqdm(train_loader, desc='Train'):
             images, labels = batch
-            imagees, labels = images.to(config.device), labels.to(config.device)
+            images, labels = images.to(config.device), labels.to(config.device)
             optimizer.zero_grad()
             
             if with_distillation and teacher is not None:
