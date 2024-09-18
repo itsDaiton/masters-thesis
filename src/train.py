@@ -2,6 +2,7 @@ import torch
 from tqdm import tqdm
 from utils.models_utils import get_last_layer
 from utils.train_utils import print_training_results, print_evaluation_results, calculate_hard_distillation
+from torch.utils.data import DataLoader
     
 def train_model(model, train_loader, val_loader, config, architecture, fine_tune=True, with_distillation=False, teacher=None):
     model.to(config.device)
@@ -86,7 +87,41 @@ def train_model(model, train_loader, val_loader, config, architecture, fine_tune
             avg_val_loss = val_loss / len(val_loader)
             avg_val_accuracy = val_correct / val_samples 
             
-            print_training_results(epoch, config.num_epochs, avg_train_loss, avg_train_accuracy, avg_val_loss, avg_val_accuracy)      
+            print_training_results(epoch, config.num_epochs, avg_train_loss, avg_train_accuracy, avg_val_loss, avg_val_accuracy) 
+            
+def zero_shot_transfer(model, dataset, config):
+    tokenized_captions = dataset.get_tokenized_captions()
+    inputs_ids = tokenized_captions['input_ids'].to(config.device)
+    dataloader = DataLoader(dataset, batch_size=32)
+    
+    model.to(config.device)
+    model.eval()     
+    
+    criterion = config.criterion
+    
+    total_loss = 0
+    total_correct = 0
+    total_samples = 0
+    
+    with torch.no_grad():
+        for batch in tqdm(dataloader):
+            images, labels = batch
+            images, labels = images.to(config.device), labels.to(config.device)
+            
+            outputs = model(images=images, texts=inputs_ids)
+            _, predictions = torch.max(outputs, 1)   
+            loss = criterion(outputs, labels)
+            
+            total_loss += loss.item()
+            total_correct += (predictions == labels).sum().item()
+            total_samples += labels.size(0)
+            
+        avg_loss = total_loss / len(dataloader)
+        avg_accuracy = total_correct / total_samples
+        
+        print(f"Zero-shot evaluation completed: Loss={avg_loss:.4f}, Accuracy={avg_accuracy:.4f}")
+             
+                 
 
 def evaluate(model, test_loader, config):  
     model.to(config.device)
