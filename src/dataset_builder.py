@@ -1,6 +1,8 @@
 from torch.utils.data import Dataset
     
 class ImageDataset(Dataset):
+    """ Class for a custom image classification dataset, with the option to create captions for each image. """
+    
     def __init__(self, dataset, processor, tokenizer=None, prompt=None, create_captions=False):
         self.dataset = dataset
         self.processor = processor
@@ -31,8 +33,7 @@ class ImageDataset(Dataset):
         
         return self.prompt.format(class_label)
 
-    def get_caption(self, idx):
-        
+    def get_caption(self, idx):        
         if not self.create_captions:
             raise ValueError("Captions were not created for this dataset. Set make_captions=True when creating the dataset.")
         
@@ -44,4 +45,5 @@ class ImageDataset(Dataset):
     def get_label(self, idx):
         item = self.dataset[idx]
         label = item['label']
+        
         return self.id2label[label]
