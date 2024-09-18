@@ -119,9 +119,7 @@ def zero_shot_transfer(model, dataset, config):
         avg_loss = total_loss / len(dataloader)
         avg_accuracy = total_correct / total_samples
         
-        print(f"Zero-shot evaluation completed: Loss={avg_loss:.4f}, Accuracy={avg_accuracy:.4f}")
-             
-                 
+        print(f"Zero-shot evaluation completed: Loss={avg_loss:.4f}, Accuracy={avg_accuracy:.4f}")          
 
 def evaluate(model, test_loader, config):  
     model.to(config.device)
