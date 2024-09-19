@@ -3,6 +3,9 @@ def print_training_results(epoch, total_epochs, train_loss, train_accuracy, val_
     
 def print_evaluation_results(test_loss, test_accuracy):
     print(f"test_loss: {test_loss:.4f} | test_acc: {test_accuracy:.4f}")
+    
+def print_zero_shot_results(loss, accuracy):
+    print(f"Zero-shot evaluation completed: loss: {loss:.4f} | acc: {accuracy:.4f}")
 
 def calculate_hard_distillation(student_outputs, teacher_predictions, labels, criterion):
     return 0.5 * criterion(student_outputs, labels) + 0.5 * criterion(student_outputs, teacher_predictions)
