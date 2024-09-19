@@ -4,7 +4,10 @@ from utils.models_utils import get_last_layer
 from utils.train_utils import print_training_results, print_evaluation_results, print_zero_shot_results, calculate_hard_distillation
 from torch.utils.data import DataLoader
     
-def train_model(model, train_loader, val_loader, config, architecture, fine_tune=True, with_distillation=False, teacher=None):
+def train_model(model, train, val, config, architecture, fine_tune=True, with_distillation=False, teacher=None):
+    train_loader = DataLoader(train, batch_size=config.batch_size, shuffle=True)
+    val_loader = DataLoader(val, batch_size=config.batch_size)
+    
     model.to(config.device)
     
     if with_distillation and teacher is not None:   
