@@ -39,7 +39,7 @@ def train_model(model, train, val, config, architecture, fine_tune=True, with_di
             optimizer.zero_grad()
             
             if with_distillation and teacher is not None:
-                with torch._no_grad():
+                with torch.no_grad():
                     teacher_outputs = teacher(images)
                     _, teacher_predictions = torch.max(teacher_outputs, 1)  
                     
