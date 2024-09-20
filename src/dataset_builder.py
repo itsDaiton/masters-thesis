@@ -42,6 +42,9 @@ class ImageDataset(Dataset):
         label = item['label']
         
         return self.id2label[label]
+    
+    def get_num_classes(self):
+        return len(self.id2label)
             
     def _create_captions_from_prompt(self):
         if not self.prompt:

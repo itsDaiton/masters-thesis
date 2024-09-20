@@ -4,10 +4,10 @@ import torch.nn as nn
 class Backbone(nn.Module):
     """ Base class for all backbone models used - ViT, DeiT, Swin, RegNet (for distillation). """
     
-    def __init__(self, num_classes, model_name):
+    def __init__(self, model_name, num_classes):
         super(Backbone, self).__init__()
         self.backbone = AutoModelForImageClassification.from_pretrained(
-            model_name=model_name,
+            pretrained_model_name_or_path=model_name,
             num_labels=num_classes,
             ignore_mismatched_sizes=True,
         )
