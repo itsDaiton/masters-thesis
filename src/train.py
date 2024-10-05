@@ -106,6 +106,9 @@ def evaluate_model(model, data, config, zero_shot=False):
     test_loss = 0
     test_correct = 0
     test_samples = 0
+    
+    total_labels = []
+    total_predictions = []
 
     with torch.no_grad():
         for batch in tqdm(dataloader, desc='Test' if not zero_shot else 'Zero-shot'):
@@ -122,6 +125,9 @@ def evaluate_model(model, data, config, zero_shot=False):
             test_loss += loss.item()
             test_correct += (predictions == labels).sum().item()
             test_samples += labels.size(0)
+            
+            total_labels.extend(labels.cpu().numpy())
+            total_predictions.extend(predictions.cpu().numpy())
     
     avg_test_loss = test_loss / len(dataloader)
     avg_test_accuracy = test_correct / test_samples
@@ -130,6 +136,16 @@ def evaluate_model(model, data, config, zero_shot=False):
         print_zero_shot_results(avg_test_loss, avg_test_accuracy)
     else:
         print_evaluation_results(avg_test_loss, avg_test_accuracy)
+    
+    labels_unique = set(total_labels)
+    per_class_accuracies = {}
+    
+    for label in labels_unique:
+        label_indices = [i for i, l in enumerate(total_labels) if l == label]
+        correct_predictions = sum([1 for i in label_indices if total_predictions[i] == label])
+        per_class_accuracies[label] = correct_predictions / len(label_indices)
+    
+    return avg_test_loss, avg_test_accuracy, per_class_accuracies
         
 def zero_shot_predict(model, image, processor, tokenizer, captions):
     images = processor(images=image, return_tensors='pt')['pixel_values']
