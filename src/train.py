@@ -130,3 +130,10 @@ def evaluate_model(model, data, config, zero_shot=False):
         print_zero_shot_results(avg_test_loss, avg_test_accuracy)
     else:
         print_evaluation_results(avg_test_loss, avg_test_accuracy)
+        
+def zero_shot_predict(model, image, processor, tokenizer, captions):
+    images = processor(images=image, return_tensors='pt')['pixel_values']
+    input_ids = tokenizer(text=captions, return_tensors='pt', padding=True, truncation=True)['input_ids']
+    outputs = model(images=images, texts=input_ids)  
+    probs = outputs.softmax(dim=1)
+    return probs
