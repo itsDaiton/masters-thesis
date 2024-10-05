@@ -24,6 +24,12 @@ class ImageDataset(Dataset):
         
         return processed_image, label
     
+    def get_image(self, idx):
+        return self.dataset[idx]['image']
+    
+    def get_prompt(self):
+        return self.prompt
+    
     def get_labels(self):
         return self.dataset.features['label'].names 
     
