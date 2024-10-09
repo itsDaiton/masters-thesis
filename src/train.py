@@ -8,6 +8,7 @@ from utils.train_utils import (
     print_zero_shot_results,
     calculate_hard_distillation,
     calculate_per_class_accuracy,
+    get_loss_function,
 )
     
 def train_model(model, train, val, config, architecture, fine_tune=True, with_distillation=False, teacher=None):
@@ -30,7 +31,7 @@ def train_model(model, train, val, config, architecture, fine_tune=True, with_di
             param.requires_grad = True        
             
     optimizer = config.optimizer(filter(lambda p: p.requires_grad, model.parameters()), lr=config.lr)
-    criterion = config.criterion
+    criterion = get_loss_function(config.is_binary_task)
     
     for epoch in range(config.num_epochs):
         model.train()
@@ -129,7 +130,7 @@ def evaluate_model(model, data, config, zero_shot=False):
         input_ids = tokenized_captions['input_ids'].to(config.device)
         
     dataloader = DataLoader(data, batch_size=config.batch_size) 
-    criterion = config.criterion
+    criterion = get_loss_function(config.is_binary_task)
     
     model.to(config.device)
     model.eval()
