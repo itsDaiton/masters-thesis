@@ -149,8 +149,12 @@ def evaluate_model(model, data, config, zero_shot=False):
             
             if zero_shot:
                 outputs = model(images=images, texts=input_ids)
+                if config.is_binary_task:
+                    outputs = outputs.unsqueeze(1)
             else:
                 outputs = model(images)
+                if config.is_binary_task:
+                    outputs = outputs.squeeze(1)
             _, predictions = torch.max(outputs, 1)
             loss = criterion(outputs, labels)
             
