@@ -5,7 +5,7 @@ from src.train import zero_shot_predict
 
 def visualize_zero_shot_predict(model, image, processor, tokenizer, captions, labels, label, prompt, title):
     probs = zero_shot_predict(model, image, processor, tokenizer, captions)
-    top_prob, top_idx = torch.topk(probs, 5, dim=1)
+    top_prob, top_idx = torch.topk(probs, min(5, len(captions)), dim=1)
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4), gridspec_kw={'width_ratios': [2, 2]})
     fig.suptitle(title, fontsize=20, fontweight='bold')
@@ -25,7 +25,7 @@ def visualize_zero_shot_predict(model, image, processor, tokenizer, captions, la
         colors[0] = 'forestgreen'
     else:
         colors[0] = 'tomato'
-        if correct_rank <= 5:
+        if correct_rank <= len(top_idx[0]):
             colors[correct_rank - 1] = 'forestgreen'
              
     sorted_labels = [captions[idx] for idx in top_idx[0]]
