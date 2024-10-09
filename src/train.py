@@ -56,6 +56,11 @@ def train_model(model, train, val, config, architecture, fine_tune=True, with_di
             outputs = model(images)
             _, predictions = torch.max(outputs, 1)
             
+            if config.is_binary_task:
+                outputs = outputs[:, 1]
+                predictions = (torch.sigmoid(outputs) > 0.5).long()
+                labels = labels.float()
+            
             if with_distillation and teacher is not None:
                 loss = calculate_hard_distillation(outputs, teacher_predictions, labels, criterion)
             else:
@@ -95,6 +100,11 @@ def train_model(model, train, val, config, architecture, fine_tune=True, with_di
                     
                 outputs = model(images)
                 _, predictions = torch.max(outputs, 1)
+                
+                if config.is_binary_task:
+                    outputs = outputs[:, 1]
+                    predictions = (torch.sigmoid(outputs) > 0.5).long()
+                    labels = labels.float()
                 
                 if with_distillation and teacher is not None:
                     loss = calculate_hard_distillation(outputs, teacher_predictions, labels, criterion)
@@ -149,13 +159,15 @@ def evaluate_model(model, data, config, zero_shot=False):
             
             if zero_shot:
                 outputs = model(images=images, texts=input_ids)
-                if config.is_binary_task:
-                    outputs = outputs.unsqueeze(1)
             else:
                 outputs = model(images)
-                if config.is_binary_task:
-                    outputs = outputs.squeeze(1)
             _, predictions = torch.max(outputs, 1)
+            
+            if config.is_binary_task:
+                outputs = outputs[:, 1]
+                predictions = (torch.sigmoid(outputs) > 0.5).long()
+                labels = labels.float()
+            
             loss = criterion(outputs, labels)
             
             test_loss += loss.item()
