@@ -1,8 +1,14 @@
 import torch
 from tqdm import tqdm
 from utils.models_utils import get_last_layer
-from utils.train_utils import print_training_results, print_evaluation_results, print_zero_shot_results, calculate_hard_distillation
 from torch.utils.data import DataLoader
+from utils.train_utils import (
+    print_training_results,
+    print_evaluation_results,
+    print_zero_shot_results,
+    calculate_hard_distillation,
+    calculate_per_class_accuracy,
+)
     
 def train_model(model, train, val, config, architecture, fine_tune=True, with_distillation=False, teacher=None):
     train_loader = DataLoader(train, batch_size=config.batch_size, shuffle=True)
@@ -33,6 +39,9 @@ def train_model(model, train, val, config, architecture, fine_tune=True, with_di
         train_correct = 0
         train_samples = 0
         
+        total_train_labels = []
+        total_train_predictions = []
+        
         for batch in tqdm(train_loader, desc='Train'):
             images, labels = batch
             images, labels = images.to(config.device), labels.to(config.device)
@@ -58,13 +67,21 @@ def train_model(model, train, val, config, architecture, fine_tune=True, with_di
             train_correct += (predictions == labels).sum().item()
             train_samples += labels.size(0)
             
+            total_train_labels.extend(labels.cpu().numpy())
+            total_train_predictions.extend(predictions.cpu().numpy())
+            
         avg_train_loss = train_loss / len(train_loader)
         avg_train_accuracy = train_correct / train_samples
+        
+        train_per_class_accuracies = calculate_per_class_accuracy(total_train_labels, total_train_predictions)
         
         model.eval()
         val_loss = 0
         val_correct = 0
         val_samples = 0
+        
+        val_total_labels = []
+        val_total_predictions = []
         
         with torch.no_grad():
             for batch in tqdm(val_loader, desc='Val'):
@@ -85,12 +102,26 @@ def train_model(model, train, val, config, architecture, fine_tune=True, with_di
                     
                 val_loss += loss.item()
                 val_correct += (predictions == labels).sum().item()
-                val_samples += labels.size(0) 
+                val_samples += labels.size(0)
+                
+                val_total_labels.extend(labels.cpu().numpy())
+                val_total_predictions.extend(predictions.cpu().numpy())
                                       
             avg_val_loss = val_loss / len(val_loader)
-            avg_val_accuracy = val_correct / val_samples 
+            avg_val_accuracy = val_correct / val_samples
             
-            print_training_results(epoch, config.num_epochs, avg_train_loss, avg_train_accuracy, avg_val_loss, avg_val_accuracy) 
+            val_per_class_accuracies = calculate_per_class_accuracy(val_total_labels, val_total_predictions)
+            
+            print_training_results(epoch, config.num_epochs, avg_train_loss, avg_train_accuracy, avg_val_loss, avg_val_accuracy)
+            
+            return (
+                avg_train_loss,
+                avg_train_accuracy,
+                train_per_class_accuracies,
+                avg_val_loss,
+                avg_val_accuracy,
+                val_per_class_accuracies,
+            ) 
 
 def evaluate_model(model, data, config, zero_shot=False):
     if zero_shot:
@@ -132,20 +163,18 @@ def evaluate_model(model, data, config, zero_shot=False):
     avg_test_loss = test_loss / len(dataloader)
     avg_test_accuracy = test_correct / test_samples
     
+    per_class_accuracies = calculate_per_class_accuracy(total_labels, total_predictions)
+    
     if zero_shot:
         print_zero_shot_results(avg_test_loss, avg_test_accuracy)
     else:
         print_evaluation_results(avg_test_loss, avg_test_accuracy)
     
-    labels_unique = set(total_labels)
-    per_class_accuracies = {}
-    
-    for label in labels_unique:
-        label_indices = [i for i, l in enumerate(total_labels) if l == label]
-        correct_predictions = sum([1 for i in label_indices if total_predictions[i] == label])
-        per_class_accuracies[label] = correct_predictions / len(label_indices)
-    
-    return avg_test_loss, avg_test_accuracy, per_class_accuracies
+    return (
+        avg_test_loss,
+        avg_test_accuracy, 
+        per_class_accuracies
+    )
         
 def zero_shot_predict(model, image, processor, tokenizer, captions):
     images = processor(images=image, return_tensors='pt')['pixel_values']

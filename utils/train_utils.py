@@ -9,3 +9,14 @@ def print_zero_shot_results(loss, accuracy):
 
 def calculate_hard_distillation(student_outputs, teacher_predictions, labels, criterion):
     return 0.5 * criterion(student_outputs, labels) + 0.5 * criterion(student_outputs, teacher_predictions)
+
+def calculate_per_class_accuracy(labels, predictions):
+    labels_unique = set(labels)
+    per_class_accuracies = {}
+    
+    for label in labels_unique:
+        label_indices = [i for i, l in enumerate(labels) if l == label]
+        correct_predictions = sum([1 for i in label_indices if predictions[i] == label])
+        per_class_accuracies[label] = correct_predictions / len(label_indices)
+        
+    return per_class_accuracies
