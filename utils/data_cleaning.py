@@ -1,9 +1,6 @@
 from datasets import load_dataset, ClassLabel
 from data.country_codes import get_country_codes
 
-data = load_dataset('timm/resisc45')
-data = load_dataset('dpdl-benchmark/sun397', split=['va'])
-
 def clean_labels(dataset, name):
     """ Custom label cleaning function specific for each dataset.""" 
     
