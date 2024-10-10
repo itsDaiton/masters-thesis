@@ -5,3 +5,4 @@ datasets
 matplotlib
 pandas
 numpy
+iso3166
