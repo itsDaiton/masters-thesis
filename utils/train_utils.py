@@ -28,3 +28,11 @@ def calculate_per_class_accuracy(labels, predictions):
         per_class_accuracies[label] = correct_predictions / len(label_indices)
         
     return per_class_accuracies 
+
+def get_top_5_accuracies(per_class_accuracies):
+    sorted_accuracies = sorted(per_class_accuracies.items(), key=lambda item: item[1], reverse=True)
+    return sorted_accuracies[:5]
+
+def get_bottom_5_accuracies(per_class_accuracies):
+    sorted_accuracies = sorted(per_class_accuracies.items(), key=lambda item: item[1])
+    return sorted_accuracies[:5]
