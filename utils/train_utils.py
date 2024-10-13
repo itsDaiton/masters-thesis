@@ -7,8 +7,8 @@ def get_gpu_info():
             print(f"GPU {i}: {torch.cuda.get_device_name(i)}")
             vram = torch.cuda.get_device_properties(i).total_memory / (1024 ** 3)
             print(f"VRAM: {vram:.2f} GB")
-        else:
-            print("CUDA is not available.")
+    else:
+        print("CUDA is not available.")
    
 def get_loss_function(is_binary_task=False):
     if is_binary_task:
