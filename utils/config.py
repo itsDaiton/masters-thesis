@@ -1,11 +1,12 @@
 import torch
 import torch.nn as nn
 from torch.optim import Adam
+from torch.nn import CrossEntropyLoss
 
 class Config:
-    def __init__(self, batch_size=8, lr=5e-5, num_epochs=5, optimizer=Adam, is_binary_task=False, weight_decay=1e-4):
+    def __init__(self, batch_size=8, lr=5e-5, num_epochs=5, optimizer=Adam, criterion=CrossEntropyLoss, weight_decay=1e-4):
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        self.is_binary_task = is_binary_task
+        self.criterion = criterion
         self.batch_size = batch_size
         self.lr = lr
         self.num_epochs = num_epochs

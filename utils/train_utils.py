@@ -9,12 +9,6 @@ def get_gpu_info():
             print(f"VRAM: {vram:.2f} GB")
     else:
         print("CUDA is not available.")
-   
-def get_loss_function(is_binary_task=False):
-    if is_binary_task:
-        return nn.BCEWithLogitsLoss()
-    else:
-        return nn.CrossEntropyLoss() 
 
 def print_training_results(epoch, total_epochs, train_loss, train_accuracy, val_loss, val_accuracy):
     print(f"Epochs: {epoch + 1}/{total_epochs} | train_loss: {train_loss:.4f} | train_acc: {train_accuracy:.4f} | val_loss: {val_loss:.4f} | val_acc: {val_accuracy:.4f}")
