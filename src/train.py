@@ -79,7 +79,11 @@ def train_model(model, train, val, config, architecture, fine_tune=True, with_di
         avg_train_loss = train_loss / len(train_loader)
         avg_train_accuracy = train_correct / train_samples
         
-        train_per_class_accuracies = calculate_per_class_accuracy(total_train_labels, total_train_predictions)
+        train_per_class_accuracies = calculate_per_class_accuracy(
+            total_train_labels, 
+            total_train_predictions,
+            train.get_labels(),
+        )
         
         model.eval()
         val_loss = 0
@@ -121,7 +125,11 @@ def train_model(model, train, val, config, architecture, fine_tune=True, with_di
             avg_val_loss = val_loss / len(val_loader)
             avg_val_accuracy = val_correct / val_samples
             
-            val_per_class_accuracies = calculate_per_class_accuracy(val_total_labels, val_total_predictions)
+            val_per_class_accuracies = calculate_per_class_accuracy(
+                val_total_labels, 
+                val_total_predictions,
+                val.get_labels(),
+            )
             
             print_training_results(epoch, config.num_epochs, avg_train_loss, avg_train_accuracy, avg_val_loss, avg_val_accuracy)
             
@@ -180,7 +188,11 @@ def evaluate_model(model, data, config, zero_shot=False):
     avg_test_loss = test_loss / len(dataloader)
     avg_test_accuracy = test_correct / test_samples
     
-    per_class_accuracies = calculate_per_class_accuracy(total_labels, total_predictions)
+    per_class_accuracies = calculate_per_class_accuracy(
+        total_labels, 
+        total_predictions,
+        data.get_labels(),
+    )
     
     if zero_shot:
         print_zero_shot_results(avg_test_loss, avg_test_accuracy)
