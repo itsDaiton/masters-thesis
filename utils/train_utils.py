@@ -1,4 +1,14 @@
 import torch.nn as nn
+import torch
+
+def get_gpu_info():
+    if torch.cuda.is_available():
+        for i in range(torch.cuda.device_count()):
+            print(f"GPU {i}: {torch.cuda.get_device_name(i)}")
+            vram = torch.cuda.get_device_properties(i).total_memory / (1024 ** 3)
+            print(f"VRAM: {vram:.2f} GB")
+        else:
+            print("CUDA is not available.")
    
 def get_loss_function(is_binary_task=False):
     if is_binary_task:
@@ -18,16 +28,16 @@ def print_zero_shot_results(loss, accuracy):
 def calculate_hard_distillation(student_outputs, teacher_predictions, labels, criterion):
     return 0.5 * criterion(student_outputs, labels) + 0.5 * criterion(student_outputs, teacher_predictions)
 
-def calculate_per_class_accuracy(labels, predictions):
+def calculate_per_class_accuracy(labels, predictions, class_names):
     labels_unique = set(labels)
     per_class_accuracies = {}
     
     for label in labels_unique:
         label_indices = [i for i, l in enumerate(labels) if l == label]
         correct_predictions = sum([1 for i in label_indices if predictions[i] == label])
-        per_class_accuracies[label] = correct_predictions / len(label_indices)
+        per_class_accuracies[class_names[label]] = correct_predictions / len(label_indices)
         
-    return per_class_accuracies 
+    return per_class_accuracies
 
 def get_top_5_accuracies(per_class_accuracies):
     sorted_accuracies = sorted(per_class_accuracies.items(), key=lambda item: item[1], reverse=True)
