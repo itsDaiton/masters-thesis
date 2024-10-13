@@ -30,7 +30,7 @@ def visualize_zero_shot_predict(model, image, processor, tokenizer, captions, la
              
     sorted_labels = [captions[idx] for idx in top_idx[0]]
 
-    ax2.barh(range(len(top_prob[0])), top_prob[0].detach().numpy() * 100, color=colors)
+    ax2.barh(range(len(top_prob[0])), top_prob[0].detach().cpu().numpy() * 100, color=colors)
     ax2.set_xlim(0, 100)
     ax2.set_xticks([0, 20, 40, 60, 80, 100])
     ax2.set_yticks([])
