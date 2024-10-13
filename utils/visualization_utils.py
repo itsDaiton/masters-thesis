@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 
 from src.train import zero_shot_predict
 
-def visualize_zero_shot_predict(model, image, processor, tokenizer, captions, labels, label, prompt, title):
-    probs = zero_shot_predict(model, image, processor, tokenizer, captions)
+def visualize_zero_shot_predict(model, image, processor, tokenizer, captions, labels, label, prompt, title, config):
+    probs = zero_shot_predict(model, image, processor, tokenizer, captions, config)
     top_prob, top_idx = torch.topk(probs, min(5, len(captions)), dim=1)
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4), gridspec_kw={'width_ratios': [2, 2]})

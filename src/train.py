@@ -205,9 +205,11 @@ def evaluate_model(model, data, config, zero_shot=False):
         per_class_accuracies
     )
         
-def zero_shot_predict(model, image, processor, tokenizer, captions):
+def zero_shot_predict(model, image, processor, tokenizer, captions, config):
+    model.to(config.device)
     images = processor(images=image, return_tensors='pt')['pixel_values']
-    input_ids = tokenizer(text=captions, return_tensors='pt', padding=True, truncation=True)['input_ids']
+    input_ids = tokenizer(text=captions, return_tensors='pt', padding=True, truncation=True)['input_ids']  
+    images, input_ids = images.to(config.device), input_ids.to(config.device) 
     outputs = model(images=images, texts=input_ids)  
     probs = outputs.softmax(dim=1)
     return probs
