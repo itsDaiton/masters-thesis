@@ -127,14 +127,14 @@ def train_model(model, train, val, config, architecture, fine_tune=True, with_di
             
             print_training_results(epoch, config.num_epochs, avg_train_loss, avg_train_accuracy, avg_val_loss, avg_val_accuracy)
             
-            return (
-                avg_train_loss,
-                avg_train_accuracy,
-                train_per_class_accuracies,
-                avg_val_loss,
-                avg_val_accuracy,
-                val_per_class_accuracies,
-            ) 
+    return (
+        avg_train_loss,
+        avg_train_accuracy,
+        train_per_class_accuracies,
+        avg_val_loss,
+        avg_val_accuracy,
+        val_per_class_accuracies,
+    ) 
 
 def evaluate_model(model, data, config, zero_shot=False):
     if zero_shot:
