@@ -2,6 +2,7 @@ import torch
 from tqdm import tqdm
 from utils.models_utils import get_last_layer
 from torch.utils.data import DataLoader
+from utils.data_handling import create_few_shot_subset
 from utils.train_utils import (
     print_training_results,
     print_evaluation_results,
@@ -10,7 +11,11 @@ from utils.train_utils import (
     calculate_per_class_accuracy,
 )
     
-def train_model(model, train, val, config, architecture, fine_tune=True, with_distillation=False, teacher=None):
+def train_model(model, train, val, config, architecture, fine_tune=True, with_distillation=False, teacher=None, few_shot=None):
+    
+    if few_shot is not None:
+        train = create_few_shot_subset(train, few_shot)
+    
     train_loader = DataLoader(train, batch_size=config.batch_size, shuffle=True)
     val_loader = DataLoader(val, batch_size=config.batch_size)
     

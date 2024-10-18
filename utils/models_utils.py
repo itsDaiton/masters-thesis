@@ -3,6 +3,7 @@ model_names = {
     'DeiT': 'facebook/deit-small-distilled-patch16-224',
     'Swin': 'microsoft/swin-tiny-patch4-window7-224',
     'RegNet': 'facebook/regnet-x-040',
+    'CLIP': 'openai/clip-vit-base-patch16',
 }
 
 def get_last_layer(model, architecture):
@@ -10,6 +11,8 @@ def get_last_layer(model, architecture):
         return model.backbone.cls_classifier
     elif architecture == 'regnet':
         return model.backbone.classifier[1]
+    elif architecture == 'clip':
+        return model.model.classifier
     else:
         return model.backbone.classifier
     
