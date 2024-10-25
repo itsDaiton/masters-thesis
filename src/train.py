@@ -2,8 +2,6 @@ import torch
 from tqdm import tqdm
 from utils.models_utils import get_last_layer
 from torch.utils.data import DataLoader
-from transformers import AutoTokenizer
-from utils.models_utils import model_names
 from utils.data_handling import create_few_shot_subset
 from utils.train_utils import (
     print_training_results,
@@ -16,9 +14,9 @@ from utils.train_utils import (
 def train_model(model, train, config, architecture, use_val=True, val=None, fine_tune=True, with_distillation=False, teacher=None, few_shot=None, context_optim=False): 
     if few_shot is not None:
         train = create_few_shot_subset(train, few_shot)
-              
+        
     if context_optim:
-        tokenizer = AutoTokenizer.from_pretrained(model_names['CLIP'])
+        input_ids = train.get_tokenized_labels()['input_ids'].to(config.device)  
     
     train_loader = DataLoader(train, batch_size=config.batch_size, shuffle=True)
     if use_val:
@@ -59,11 +57,6 @@ def train_model(model, train, config, architecture, use_val=True, val=None, fine
         for batch in tqdm(train_loader):
             images, labels = batch
             images, labels = images.to(config.device), labels.to(config.device)
-            
-            if context_optim:
-                tokenized_labels = tokenizer(text=labels, return_tensors='pt', padding=True, truncation=True)
-                input_ids = tokenized_labels['input_ids'].to(config.device)  
-            
             optimizer.zero_grad()
             
             if with_distillation and teacher is not None:
