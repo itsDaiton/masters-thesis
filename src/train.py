@@ -11,13 +11,13 @@ from utils.train_utils import (
     calculate_per_class_accuracy,
 )
     
-def train_model(model, train, val, config, architecture, fine_tune=True, with_distillation=False, teacher=None, few_shot=None):
-    
+def train_model(model, train, val, config, architecture, use_val=True, fine_tune=True, with_distillation=False, teacher=None, few_shot=None, context_optim=False): 
     if few_shot is not None:
         train = create_few_shot_subset(train, few_shot)
     
     train_loader = DataLoader(train, batch_size=config.batch_size, shuffle=True)
-    val_loader = DataLoader(val, batch_size=config.batch_size)
+    if use_val:
+        val_loader = DataLoader(val, batch_size=config.batch_size)
     
     model.to(config.device)
     
@@ -25,7 +25,12 @@ def train_model(model, train, val, config, architecture, fine_tune=True, with_di
         teacher.to(config.device)
         teacher.eval()
         
-    if not fine_tune:
+    if context_optim:
+        for param in model.parameters():
+            param.requires_grad = False
+        for param in model.prompt_embedd.parameters():
+            param.requires_grad = True    
+    elif not fine_tune:
         for param in model.parameters():
             param.requires_grad = False
         for param in get_last_layer(model, architecture).parameters():
@@ -47,7 +52,7 @@ def train_model(model, train, val, config, architecture, fine_tune=True, with_di
         total_train_labels = []
         total_train_predictions = []
         
-        for batch in tqdm(train_loader, desc='Train'):
+        for batch in tqdm(train_loader):
             images, labels = batch
             images, labels = images.to(config.device), labels.to(config.device)
             optimizer.zero_grad()
@@ -56,8 +61,12 @@ def train_model(model, train, val, config, architecture, fine_tune=True, with_di
                 with torch.no_grad():
                     teacher_outputs = teacher(images)
                     _, teacher_predictions = torch.max(teacher_outputs, 1)  
+            
+            if context_optim:
+                outputs = model(images, labels=labels)
+            else:
+                outputs = model(images)             
                     
-            outputs = model(images)
             _, predictions = torch.max(outputs, 1)
             
             if with_distillation and teacher is not None:
@@ -84,57 +93,65 @@ def train_model(model, train, val, config, architecture, fine_tune=True, with_di
             train.get_labels(),
         )
         
-        model.eval()
-        val_loss = 0
-        val_correct = 0
-        val_samples = 0
-        
-        val_total_labels = []
-        val_total_predictions = []
-        
-        with torch.no_grad():
-            for batch in tqdm(val_loader, desc='Val'):
-                images, labels = batch
-                images, labels = images.to(config.device), labels.to(config.device)
-                
-                if with_distillation and teacher is not None:
-                    teacher_outputs = teacher(images)
-                    _, teacher_predictions = torch.max(teacher_outputs, 1)
+        if use_val:
+            model.eval()
+            val_loss = 0
+            val_correct = 0
+            val_samples = 0
+            
+            val_total_labels = []
+            val_total_predictions = []
+            
+            with torch.no_grad():
+                for batch in tqdm(val_loader):
+                    images, labels = batch
+                    images, labels = images.to(config.device), labels.to(config.device)
                     
-                outputs = model(images)
-                _, predictions = torch.max(outputs, 1)
-                
-                if with_distillation and teacher is not None:
-                    loss = calculate_hard_distillation(outputs, teacher_predictions, labels, criterion)
-                else:
-                    loss = criterion(outputs, labels)
+                    if with_distillation and teacher is not None:
+                        teacher_outputs = teacher(images)
+                        _, teacher_predictions = torch.max(teacher_outputs, 1)
+                        
+                    outputs = model(images)
+                    _, predictions = torch.max(outputs, 1)
                     
-                val_loss += loss.item()
-                val_correct += (predictions == labels).sum().item()
-                val_samples += labels.size(0)
+                    if with_distillation and teacher is not None:
+                        loss = calculate_hard_distillation(outputs, teacher_predictions, labels, criterion)
+                    else:
+                        loss = criterion(outputs, labels)
+                        
+                    val_loss += loss.item()
+                    val_correct += (predictions == labels).sum().item()
+                    val_samples += labels.size(0)
+                    
+                    val_total_labels.extend(labels.cpu().numpy())
+                    val_total_predictions.extend(predictions.cpu().numpy())
+                                        
+                avg_val_loss = val_loss / len(val_loader)
+                avg_val_accuracy = val_correct / val_samples
                 
-                val_total_labels.extend(labels.cpu().numpy())
-                val_total_predictions.extend(predictions.cpu().numpy())
-                                      
-            avg_val_loss = val_loss / len(val_loader)
-            avg_val_accuracy = val_correct / val_samples
-            
-            val_per_class_accuracies = calculate_per_class_accuracy(
-                val_total_labels, 
-                val_total_predictions,
-                val.get_labels(),
-            )
-            
-            print_training_results(epoch, config.num_epochs, avg_train_loss, avg_train_accuracy, avg_val_loss, avg_val_accuracy)
-            
-    return (
-        avg_train_loss,
-        avg_train_accuracy,
-        train_per_class_accuracies,
-        avg_val_loss,
-        avg_val_accuracy,
-        val_per_class_accuracies,
-    ) 
+                val_per_class_accuracies = calculate_per_class_accuracy(
+                    val_total_labels, 
+                    val_total_predictions,
+                    val.get_labels(),
+                )
+                
+        print_training_results(epoch, config.num_epochs, avg_train_loss, avg_train_accuracy, avg_val_loss, avg_val_accuracy)
+    
+    if use_val:
+        return (
+            avg_train_loss,
+            avg_train_accuracy,
+            train_per_class_accuracies,
+            avg_val_loss,
+            avg_val_accuracy,
+            val_per_class_accuracies,
+        )
+    else:
+        return (
+            avg_train_loss,
+            avg_train_accuracy,
+            train_per_class_accuracies,
+        )
 
 def evaluate_model(model, data, config, zero_shot=False):
     if zero_shot:

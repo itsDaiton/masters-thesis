@@ -10,8 +10,11 @@ def get_gpu_info():
     else:
         print("CUDA is not available.")
 
-def print_training_results(epoch, total_epochs, train_loss, train_accuracy, val_loss, val_accuracy):
-    print(f"Epochs: {epoch + 1}/{total_epochs} | train_loss: {train_loss:.4f} | train_acc: {train_accuracy:.4f} | val_loss: {val_loss:.4f} | val_acc: {val_accuracy:.4f}")
+def print_training_results(epoch, total_epochs, train_loss, train_accuracy, val_loss=None, val_accuracy=None):
+    if val_loss is not None and val_accuracy is not None:
+        print(f"Epochs: {epoch + 1}/{total_epochs} | train_loss: {train_loss:.4f} | train_acc: {train_accuracy:.4f} | val_loss: {val_loss:.4f} | val_acc: {val_accuracy:.4f}")
+    else:
+        print(f"Epochs: {epoch + 1}/{total_epochs} | train_loss: {train_loss:.4f} | train_acc: {train_accuracy:.4f}")
     
 def print_evaluation_results(test_loss, test_accuracy):
     print(f"test_loss: {test_loss:.4f} | test_acc: {test_accuracy:.4f}")
