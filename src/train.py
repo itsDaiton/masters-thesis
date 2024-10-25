@@ -11,7 +11,7 @@ from utils.train_utils import (
     calculate_per_class_accuracy,
 )
     
-def train_model(model, train, val, config, architecture, use_val=True, fine_tune=True, with_distillation=False, teacher=None, few_shot=None, context_optim=False): 
+def train_model(model, train, config, architecture, val=None, use_val=True, fine_tune=True, with_distillation=False, teacher=None, few_shot=None): 
     if few_shot is not None:
         train = create_few_shot_subset(train, few_shot)
     
@@ -24,13 +24,8 @@ def train_model(model, train, val, config, architecture, use_val=True, fine_tune
     if with_distillation and teacher is not None:   
         teacher.to(config.device)
         teacher.eval()
-        
-    if context_optim:
-        for param in model.parameters():
-            param.requires_grad = False
-        for param in model.prompt_embedd.parameters():
-            param.requires_grad = True    
-    elif not fine_tune:
+          
+    if not fine_tune:
         for param in model.parameters():
             param.requires_grad = False
         for param in get_last_layer(model, architecture).parameters():
@@ -62,10 +57,7 @@ def train_model(model, train, val, config, architecture, use_val=True, fine_tune
                     teacher_outputs = teacher(images)
                     _, teacher_predictions = torch.max(teacher_outputs, 1)  
             
-            if context_optim:
-                outputs = model(images, labels=labels)
-            else:
-                outputs = model(images)             
+            outputs = model(images)             
                     
             _, predictions = torch.max(outputs, 1)
             
