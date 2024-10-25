@@ -41,7 +41,12 @@ class ImageDataset(Dataset):
     def get_tokenized_captions(self):
         if not self.create_captions or not self.captions:
             raise ValueError("Captions were not created for this dataset. Set create_captions=True when creating the dataset.")
-        return self.tokenized_captions        
+        return self.tokenized_captions    
+    
+    def get_tokenized_labels(self):
+        if not self.tokenizer:
+            raise ValueError("Tokenizer is not provided.")
+        return self._tokenize_labels()    
          
     def get_label(self, idx):
         item = self.dataset[idx]

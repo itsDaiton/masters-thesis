@@ -65,7 +65,7 @@ def train_model(model, train, config, architecture, use_val=True, val=None, fine
                     _, teacher_predictions = torch.max(teacher_outputs, 1)  
             
             if context_optim:
-                outputs = model(images, labels=labels)
+                outputs = model(images, labels=input_ids)
             else:
                 outputs = model(images)             
                     
