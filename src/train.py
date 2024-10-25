@@ -11,7 +11,7 @@ from utils.train_utils import (
     calculate_per_class_accuracy,
 )
     
-def train_model(model, train, config, architecture, use_val=True, val=None, fine_tune=True, with_distillation=False, teacher=None, few_shot=None, context_optim=False): 
+def train_model(model, train, val, config, architecture, use_val=True, fine_tune=True, with_distillation=False, teacher=None, few_shot=None, context_optim=False): 
     if few_shot is not None:
         train = create_few_shot_subset(train, few_shot)
     
@@ -28,7 +28,8 @@ def train_model(model, train, config, architecture, use_val=True, val=None, fine
     if context_optim:
         for param in model.parameters():
             param.requires_grad = False
-        model.prompt_embedd.requires_grad = True  
+        for param in model.prompt_embedd.parameters():
+            param.requires_grad = True    
     elif not fine_tune:
         for param in model.parameters():
             param.requires_grad = False
