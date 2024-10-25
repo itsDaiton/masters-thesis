@@ -14,9 +14,6 @@ from utils.train_utils import (
 def train_model(model, train, config, architecture, use_val=True, val=None, fine_tune=True, with_distillation=False, teacher=None, few_shot=None, context_optim=False): 
     if few_shot is not None:
         train = create_few_shot_subset(train, few_shot)
-        
-    if context_optim:
-        input_ids = train.get_tokenized_labels()['input_ids'].to(config.device)  
     
     train_loader = DataLoader(train, batch_size=config.batch_size, shuffle=True)
     if use_val:

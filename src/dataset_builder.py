@@ -61,8 +61,3 @@ class ImageDataset(Dataset):
         if not self.tokenizer:
             raise ValueError("Tokenizer is not provided.")
         return self.tokenizer(text=self.captions, return_tensors='pt', padding=True, truncation=True)
-    
-    def _tokenize_labels(self):
-        if not self.tokenizer:
-            raise ValueError("Tokenizer is not provided.")
-        return self.tokenizer(text=self.get_labels(), return_tensors='pt', padding=True, truncation=True)
