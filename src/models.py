@@ -44,7 +44,7 @@ class CLIP(nn.Module):
             )
  
     def forward(self, images, texts=None, labels=None):
-        if self.use_coop and labels is not None:
+        if self.use_coop and self.for_training is None and labels is not None:
             prompt_texts = []
             for label in labels:
                 label_embedding = self.model.get_text_features(input_ids=label)
