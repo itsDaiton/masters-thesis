@@ -11,7 +11,10 @@ TBD
 TBD
 
 ## Models
-TBD
+- CLIP
+- ViT
+- DeiT
+- Swin
 
 ## Results
 TBD
