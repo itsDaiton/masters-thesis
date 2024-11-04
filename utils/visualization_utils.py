@@ -1,5 +1,6 @@
 import torch
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 from src.train import zero_shot_predict
 
@@ -39,5 +40,44 @@ def visualize_zero_shot_predict(model, image, processor, tokenizer, captions, la
     for bar, label in zip(ax2.patches, sorted_labels):
         ax2.text(1.5, bar.get_y() + bar.get_height() / 2, label, color='black', ha='left', va='center')
 
+    plt.tight_layout()
+    plt.show()
+    
+def plot_n_shot_results(accuracy_dict, title):
+    sns.set_style("darkgrid")
+    n_shots = [0, 1, 2, 4, 8, 16]
+    
+    for key, value in accuracy_dict.items():
+        sns.lineplot(x=n_shots, y=value, label=key, marker='o')
+        
+    plt.xlabel('Number of training examples per class', fontsize=14)
+    plt.ylabel('Accuracy', fontsize=14)
+    plt.xticks(n_shots)
+    plt.legend(loc='lower right')          
+    plt.suptitle(title, fontsize=20, fontweight='bold')
+    
+    plt.tight_layout()
+    plt.show()
+    
+def plot_per_class_accuracies(per_class_accuracies, title, num_bins=10):
+    accuracies = list(per_class_accuracies.values())
+    plot_title = 'Class Accuracy Distribution - ' + title
+    
+    colors = sns.color_palette('viridis', num_bins)
+    sns.set_style("darkgrid")
+    
+    plt.figure(figsize=(10, 6))
+    ax = sns.histplot(accuracies, bins=[i / num_bins for i in range(num_bins + 1)], kde=False, edgecolor='black')
+    
+    for i, patch in enumerate(ax.patches):
+        patch.set_facecolor(colors[i]) 
+        
+    plt.xlabel('Accuracy', fontsize=14)
+    plt.ylabel('Frequency', fontsize=14)
+    plt.xlim(0, 1)
+    plt.xticks([i/10 for i in range(11)])
+    
+    plt.suptitle(plot_title, fontsize=20, fontweight='bold')
+    
     plt.tight_layout()
     plt.show()

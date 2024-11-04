@@ -2,7 +2,9 @@ from datasets import ClassLabel
 from data.country_codes import get_country_codes
 from data.mappings.label_mappings import pcam, sun397
 from collections import defaultdict
+from src.dataset_builder import ImageDataset
 import copy
+
 
 def clean_labels(dataset, name):
     """ Custom label cleaning function specific for each dataset.""" 
@@ -29,12 +31,10 @@ def clean_labels(dataset, name):
         features_copy = dataset[split].features.copy()
         features_copy['label'] = ClassLabel(names=clean_labels)
         dataset[split] = dataset[split].cast(features_copy) 
-        dataset[split] = dataset[split].map(lambda example: {'label' : label_mapping[example['label']]})
-        
+        dataset[split] = dataset[split].map(lambda example: {'label' : label_mapping[example['label']]})   
+
 def create_few_shot_subset(dataset, k):
-    
-    dataset_subset = copy.deepcopy(dataset)
-    
+    dataset_subset = copy.deepcopy(dataset) 
     label_to_indices = defaultdict(list)
     
     for idx in range(len(dataset_subset)):
@@ -49,3 +49,8 @@ def create_few_shot_subset(dataset, k):
     dataset_subset.dataset = dataset_subset.dataset.select(few_shot_indices)
     
     return dataset_subset
+
+
+def create_accuracy_dict(results, labels):
+    accuracy_dict = dict(zip(labels, results))
+    return accuracy_dict

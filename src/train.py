@@ -2,7 +2,7 @@ import torch
 from tqdm import tqdm
 from utils.models_utils import get_last_layer
 from torch.utils.data import DataLoader
-from utils.data_handling import create_few_shot_subset
+from utils.data_utils import create_few_shot_subset
 from utils.train_utils import (
     print_training_results,
     print_evaluation_results,
