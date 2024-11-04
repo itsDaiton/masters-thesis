@@ -3,6 +3,7 @@ torchvision
 transformers
 datasets
 matplotlib
+searborn
 pandas
 numpy
 iso3166
