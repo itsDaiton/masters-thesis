@@ -22,7 +22,12 @@ class ImageDataset(Dataset):
         image, label = item['image'], item['label']    
         processed_image = self.processor(images=image, return_tensors='pt')['pixel_values'].squeeze()      
         label_caption = self.captions[label] if self.create_captions else None
-        processed_caption = self.tokenizer(text=label_caption, return_tensors='pt', padding=True, truncation=True)['input_ids'] if self.create_captions else None
+        processed_caption = self.tokenizer(
+            text=label_caption, 
+            return_tensors='pt', 
+            padding='max_length', 
+            truncation=True
+        )['input_ids'] if self.create_captions else None
         
         return processed_image, label, processed_caption
     
