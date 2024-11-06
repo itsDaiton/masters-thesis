@@ -1,6 +1,7 @@
 import torch
 import matplotlib.pyplot as plt
 import seaborn as sns
+from matplotlib.ticker import MaxNLocator
 
 from src.train import zero_shot_predict
 
@@ -78,6 +79,8 @@ def plot_per_class_accuracies(per_class_accuracies, title, num_bins=10):
     plt.ylabel('Frequency', fontsize=14)
     plt.xlim(0, 1)
     plt.xticks([i/10 for i in range(11)])
+    
+    ax.yaxis.set_major_locator(MaxNLocator(integer=True, prune=None))
     
     plt.suptitle(plot_title, fontsize=20, fontweight='bold')
     
