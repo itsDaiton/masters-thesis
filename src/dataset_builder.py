@@ -55,7 +55,7 @@ class ImageDataset(Dataset):
     def _create_captions_from_prompt(self):
         if not self.prompt:
             raise ValueError("Prompt is not provided.")
-        return [self.prompt.format(self.id2label[i]) for i in self.id2label]
+        return [self.prompt.format(*[self.id2label[i]] * self.prompt.count('{}')) for i in self.id2label]
            
     def _tokenize_captions(self):
         if not self.tokenizer:
