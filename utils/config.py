@@ -12,3 +12,6 @@ class Config:
         self.num_epochs = num_epochs
         self.optimizer = optimizer
         self.weight_decay = weight_decay
+        
+    def get_settings(self):
+        return { attr: value for attr, value in vars(self).items() }
