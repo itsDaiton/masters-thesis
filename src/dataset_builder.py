@@ -61,3 +61,9 @@ class ImageDataset(Dataset):
         if not self.tokenizer:
             raise ValueError("Tokenizer is not provided.")
         return self.tokenizer(text=self.captions, return_tensors='pt', padding=True, truncation=True)
+    
+    def set_prompt(self, new_prompt):
+        self.prompt = new_prompt
+        if self.create_captions:
+            self.captions = self._create_captions_from_prompt()
+            self.tokenized_captions = self._tokenize_captions()
