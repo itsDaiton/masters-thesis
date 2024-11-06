@@ -5,6 +5,8 @@ import seaborn as sns
 from src.train import zero_shot_predict
 
 def visualize_zero_shot_predict(model, image, processor, tokenizer, captions, labels, label, prompt, title, config):
+    sns.reset_orig()
+    
     probs = zero_shot_predict(model, image, processor, tokenizer, captions, config)
     top_prob, top_idx = torch.topk(probs, min(5, len(captions)), dim=1)
 
