@@ -164,7 +164,7 @@ def evaluate_model(model, data, config, zero_shot=False):
     total_predictions = []
 
     with torch.no_grad():
-        for batch in tqdm(dataloader, desc='Test' if not zero_shot else 'Zero-shot'):
+        for batch in tqdm(dataloader):
             images, labels = batch
             images, labels = images.to(config.device), labels.to(config.device)
             
