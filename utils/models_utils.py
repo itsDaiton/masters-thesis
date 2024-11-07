@@ -27,4 +27,7 @@ def get_clip_processor_and_tokenizer(model_name='openai/clip-vit-base-patch16'):
     return processor, tokenizer
 
 def get_backbone_processor(model_name):
-    return AutoImageProcessor.from_pretrained(model_name)
+    if model_name == model_names['ViT']:
+        return AutoImageProcessor.from_pretrained(model_name, use_fast=True)
+    else:
+        return AutoImageProcessor.from_pretrained(model_name)
