@@ -126,8 +126,10 @@ def train_model(model, train, config, architecture, val=None, use_val=True, fine
                     val_total_predictions,
                     val.get_labels(),
                 )
-                
-        print_training_results(epoch, config.num_epochs, avg_train_loss, avg_train_accuracy, avg_val_loss, avg_val_accuracy)
+        if use_val:
+            print_training_results(epoch, config.num_epochs, avg_train_loss, avg_train_accuracy, avg_val_loss, avg_val_accuracy)
+        else:
+            print_training_results(epoch, config.num_epochs, avg_train_loss, avg_train_accuracy)
     
     if use_val:
         return (
