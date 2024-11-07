@@ -1,8 +1,6 @@
 from datasets import ClassLabel
-from data.country_codes import get_country_codes
 from data.mappings.label_mappings import pcam, sun397
 from collections import defaultdict
-from src.dataset_builder import ImageDataset
 import copy
 
 
@@ -17,10 +15,6 @@ def clean_labels(dataset, name):
         
         if name == 'pcam':
             mappings = pcam
-            clean_labels = [mappings.get(label, label) for label in labels]
-            
-        if name == 'country211':
-            mappings = get_country_codes()
             clean_labels = [mappings.get(label, label) for label in labels]
             
         if name == 'sun397':
