@@ -1,10 +1,10 @@
 from transformers import CLIPImageProcessor, CLIPTokenizer
 
 model_names = {
-    'ViT': 'facebook/deit-small-patch16-224',
-    'DeiT': 'facebook/deit-small-distilled-patch16-224',
-    'Swin': 'microsoft/swin-tiny-patch4-window7-224',
-    'RegNet': 'facebook/regnet-x-040',
+    'ViT': 'google/vit-base-patch16-224',
+    'DeiT': 'facebook/deit-base-distilled-patch16-224',
+    'Swin': 'microsoft/swin-base-patch4-window7-224',
+    'RegNet': 'facebook/regnet-y-160',
     'CLIP': 'openai/clip-vit-base-patch16',
 }
 

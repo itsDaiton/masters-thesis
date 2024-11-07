@@ -46,7 +46,7 @@ def visualize_zero_shot_predict(model, image, processor, tokenizer, captions, la
     plt.tight_layout()
     plt.show()
     
-def plot_n_shot_results(accuracy_dict, title):
+def plot_results(accuracy_dict, title):
     sns.set_style("darkgrid")
     n_shots = [0, 1, 2, 4, 8, 16]
     
