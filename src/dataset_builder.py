@@ -67,3 +67,6 @@ class ImageDataset(Dataset):
         if self.create_captions:
             self.captions = self._create_captions_from_prompt()
             self.tokenized_captions = self._tokenize_captions()
+            
+    def set_processor(self, new_processor):
+        self.processor = new_processor
