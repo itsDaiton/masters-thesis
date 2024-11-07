@@ -1,4 +1,4 @@
-from transformers import CLIPImageProcessor, CLIPTokenizer
+from transformers import CLIPImageProcessor, CLIPTokenizer, AutoImageProcessor
 
 model_names = {
     'ViT': 'google/vit-base-patch16-224',
@@ -25,3 +25,6 @@ def get_clip_processor_and_tokenizer(model_name='openai/clip-vit-base-patch16'):
     processor = CLIPImageProcessor.from_pretrained(model_name)
     tokenizer = CLIPTokenizer.from_pretrained(model_name)
     return processor, tokenizer
+
+def get_backbone_processor(model_name):
+    return AutoImageProcessor.from_pretrained(model_name)
