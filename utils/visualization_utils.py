@@ -46,7 +46,7 @@ def visualize_zero_shot_predict(model, image, processor, tokenizer, captions, la
     plt.tight_layout()
     plt.show()
     
-def plot_results(accuracy_dict, title):
+def plot_few_shot_results(accuracy_dict, title):
     sns.set_style("darkgrid")
     n_shots = [0, 1, 2, 4, 8, 16]
     
@@ -59,6 +59,27 @@ def plot_results(accuracy_dict, title):
     plt.legend(loc='lower right')          
     plt.suptitle(title, fontsize=20, fontweight='bold')
     
+    plt.tight_layout()
+    plt.show()
+    
+def plot_few_shot_results_multiple(results, dataset_names, labels):
+    _, axes = plt.subplots(2, 3, figsize=(18, 12))
+    sns.set_style("darkgrid")
+    n_shots = [1, 2, 4, 8, 16]
+    
+    for i, (dataset_results, dataset_name) in enumerate(zip(results, dataset_names)):
+        
+        ax = axes[i // 3, i % 3]
+        
+        for j, model_results in enumerate(dataset_results):
+            sns.lineplot(x=n_shots, y=model_results, label=labels[j], marker='o', ax=ax)
+         
+        ax.set_xlabel('Number of training examples per class', fontsize=14)
+        ax.set_ylabel('Accuracy', fontsize=14)
+        ax.set_xticks(n_shots)
+        ax.legend(loc='lower right')          
+        ax.set_title(dataset_name, fontsize=20, fontweight='bold')
+        
     plt.tight_layout()
     plt.show()
     
