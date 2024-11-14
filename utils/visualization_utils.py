@@ -62,12 +62,12 @@ def plot_few_shot_results(accuracy_dict, title):
     plt.tight_layout()
     plt.show()
     
-def plot_results_multiple(results, dataset_names, labels, zero_shot_results):
+def plot_results_multiple(few_shot_results, zero_shot_results, dataset_names, labels):
     _, axes = plt.subplots(2, 3, figsize=(18, 12))
     sns.set_style("darkgrid")
     n_shots = [0, 1, 2, 4, 8, 16]
     
-    for i, (dataset_results, dataset_name) in enumerate(zip(results, dataset_names)):
+    for i, (dataset_results, dataset_name) in enumerate(zip(few_shot_results, dataset_names)):
         
         ax = axes[i // 3, i % 3]
         
