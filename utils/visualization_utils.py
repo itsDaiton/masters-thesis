@@ -62,17 +62,18 @@ def plot_few_shot_results(accuracy_dict, title):
     plt.tight_layout()
     plt.show()
     
-def plot_few_shot_results_multiple(results, dataset_names, labels):
+def plot_results_multiple(results, dataset_names, labels, zero_shot_results):
     _, axes = plt.subplots(2, 3, figsize=(18, 12))
     sns.set_style("darkgrid")
-    n_shots = [1, 2, 4, 8, 16]
+    n_shots = [0, 1, 2, 4, 8, 16]
     
     for i, (dataset_results, dataset_name) in enumerate(zip(results, dataset_names)):
         
         ax = axes[i // 3, i % 3]
         
         for j, model_results in enumerate(dataset_results):
-            sns.lineplot(x=n_shots, y=model_results, label=labels[j], marker='o', ax=ax)
+            sns.lineplot(x=n_shots[1:], y=model_results, label=labels[j], marker='o', ax=ax)
+            ax.plot(0, zero_shot_results[i][j], marker='*', markersize=10, color=ax.get_lines()[-1].get_color())
          
         ax.set_xlabel('Number of training examples per class', fontsize=14)
         ax.set_ylabel('Accuracy', fontsize=14)
