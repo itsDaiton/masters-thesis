@@ -19,7 +19,11 @@ class ImageDataset(Dataset):
     
     def __getitem__(self, idx):
         item = self.dataset[idx]
-        image, label = item['image'], item['label']    
+        image, label = item['image'], item['label']
+        
+        if image.mode == 'L':
+            image = image.convert('RGB')
+        
         processed_image = self.processor(images=image, return_tensors='pt')['pixel_values'].squeeze()      
        
         return processed_image, label
