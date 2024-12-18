@@ -34,7 +34,11 @@ def train_model(model, train, config, architecture, val=None, use_val=True, fine
         for param in model.parameters():
             param.requires_grad = True        
             
-    optimizer = config.optimizer(filter(lambda p: p.requires_grad, model.parameters()), lr=config.lr)
+    optimizer = config.optimizer(
+        filter(lambda p: p.requires_grad, model.parameters()), 
+        lr=config.lr, 
+        weight_decay=config.weight_decay
+    )
     criterion = config.criterion
     
     for epoch in range(config.num_epochs):
