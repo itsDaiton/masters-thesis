@@ -9,6 +9,7 @@ disable=
     C0116,
     R0903,
     R1721,
+    E0015,
 
 [REPORTS]
 output-format=colorized
