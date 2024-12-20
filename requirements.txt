@@ -1,3 +1,12 @@
+# Python version
+python_version >= "3.10"
+
+# Project dependencies
+pylint
+black
+nbstripout
+
+# Required dependencies
 torch
 torchvision
 transformers
