@@ -8,6 +8,7 @@ disable=
     C0115,
     C0116,
     R0903,
+    R1721,
 
 [REPORTS]
 output-format=colorized
@@ -16,4 +17,7 @@ output-format=colorized
 max-line-length=100
 
 [DESIGN]
-max-args=10
+max-args=15
+max-attributes=10
+max-positional-arguments=15
+max-locals=30
