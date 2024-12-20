@@ -47,11 +47,11 @@ def visualize_zero_shot_predict(
     ax2.set_yticks([])
     ax2.invert_yaxis()
     ax2.title.set_text(string)
-    for patch, label in zip(ax2.patches, sorted_labels):
+    for patch, sorted_label in zip(ax2.patches, sorted_labels):
         ax2.text(
             1.5,
             patch.get_y() + patch.get_height() / 2,
-            label,
+            sorted_label,
             color="black",
             ha="left",
             va="center",

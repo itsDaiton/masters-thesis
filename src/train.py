@@ -169,12 +169,11 @@ def train_model(
             avg_val_accuracy,
             val_per_class_accuracies,
         )
-    else:
-        return (
-            avg_train_loss,
-            avg_train_accuracy,
-            train_per_class_accuracies,
-        )
+    return (
+        avg_train_loss,
+        avg_train_accuracy,
+        train_per_class_accuracies,
+    )
 
 
 def evaluate_model(model, data, config, zero_shot=False):

@@ -10,6 +10,8 @@ disable=
     R0903,
     R1721,
     E0015,
+    R1728,
+    R1725,
 
 [REPORTS]
 output-format=colorized
@@ -21,4 +23,6 @@ max-line-length=100
 max-args=15
 max-attributes=10
 max-positional-arguments=15
-max-locals=30
+max-locals=50
+max-statements=100
+max-branches=35

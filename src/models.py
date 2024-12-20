@@ -1,5 +1,5 @@
 from transformers import AutoModelForImageClassification, CLIPModel
-import torch.nn as nn
+from torch import nn
 from utils.models_utils import model_names
 
 
