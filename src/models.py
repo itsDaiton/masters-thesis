@@ -43,6 +43,5 @@ class CLIP(nn.Module):
         if self.for_training:
             outputs = self.model(pixel_values=images)
             return outputs.logits
-        else:
-            outputs = self.model(pixel_values=images, input_ids=texts)
-            return outputs.logits_per_image
+        outputs = self.model(pixel_values=images, input_ids=texts)
+        return outputs.logits_per_image
