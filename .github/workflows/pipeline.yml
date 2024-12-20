@@ -1,4 +1,4 @@
-name: Python Application Pipeline
+name: Project Pipeline
 
 on: [push]
 
@@ -32,4 +32,4 @@ jobs:
         run: black --check .
 
       - name: Strip Output from Jupyter Notebooks
-        run: nbstripout --check --ignore-missing .
+        run: nbstripout .
