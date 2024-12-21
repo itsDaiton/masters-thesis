@@ -23,7 +23,7 @@ def clean_labels(dataset, name):
 
         label_mapping = {i: labels_cleaned[i] for i in range(len(labels))}
         features_copy = dataset[split].features.copy()
-        features_copy["label"] = ClassLabel(names=clean_labels)
+        features_copy["label"] = ClassLabel(names=labels_cleaned)
         dataset[split] = dataset[split].cast(features_copy)
         dataset[split] = dataset[split].map(
             lambda example, label_mapping=label_mapping: {
