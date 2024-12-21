@@ -1,3 +1,9 @@
+# Project dependencies
+pylint
+black
+nbstripout
+
+# Required dependencies
 torch
 torchvision
 transformers

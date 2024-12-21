@@ -1,7 +1,4 @@
-pcam = {
-    "0": "healthy lymph node tissue",
-    "1": "lymph node tumor tissue"
-}
+pcam = {"0": "healthy lymph node tissue", "1": "lymph node tumor tissue"}
 
 sun397 = {
     "/a/abbey": "abbey",

@@ -1,0 +1,28 @@
+[MASTER]
+ignore=venv
+jobs=1
+
+[MESSAGES CONTROL]
+disable=
+    C0114,
+    C0115,
+    C0116,
+    R0903,
+    R1721,
+    E0015,
+    R1728,
+    R1725,
+
+[REPORTS]
+output-format=colorized
+
+[FORMAT]
+max-line-length=100
+
+[DESIGN]
+max-args=15
+max-attributes=10
+max-positional-arguments=15
+max-locals=50
+max-statements=100
+max-branches=35
