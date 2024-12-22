@@ -2,6 +2,7 @@ import torch
 from tqdm import tqdm
 from torch.utils.data import DataLoader
 from torch.nn.utils import clip_grad_norm_
+from torch.optim.lr_scheduler import LinearLR, CosineAnnealingLR, SequentialLR
 from utils.models_utils import get_last_layer
 from utils.data_utils import create_few_shot_subset
 from utils.train_utils import (
@@ -25,6 +26,7 @@ def train_model(
     teacher=None,
     few_shot=None,
     gradient_clipping=False,
+    scheduling=False,
 ):
     if few_shot is not None:
         train = create_few_shot_subset(train, few_shot)
@@ -54,6 +56,24 @@ def train_model(
         weight_decay=config.weight_decay,
     )
     criterion = config.criterion
+
+    if scheduling:
+        warmup_scheduler = LinearLR(
+            optimizer=optimizer,
+            start_factor=0.1,
+            end_factor=1,
+            total_iters=config.scheduler_config.warmup_epochs,
+        )
+        cosine_scheduler = CosineAnnealingLR(
+            optimizer=optimizer,
+            T_max=config.num_epochs - config.scheduler_config.warmup_epochs,
+            eta_min=config.scheduler_config.eta_min,
+        )
+        scheduler = SequentialLR(
+            optimizer=optimizer,
+            schedulers=[warmup_scheduler, cosine_scheduler],
+            milestones=[config.scheduler_config.warmup_epochs],
+        )
 
     for epoch in range(config.num_epochs):
         model.train()
@@ -102,6 +122,9 @@ def train_model(
 
             total_train_labels.extend(labels.cpu().numpy())
             total_train_predictions.extend(predictions.cpu().numpy())
+
+        if scheduling:
+            scheduler.step()
 
         avg_train_loss = train_loss / len(train_loader)
         avg_train_accuracy = train_correct / train_samples

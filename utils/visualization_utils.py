@@ -1,6 +1,7 @@
 import torch
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
 from matplotlib.ticker import MaxNLocator
 from src.train import zero_shot_predict
 
@@ -128,4 +129,34 @@ def plot_per_class_accuracies(per_class_accuracies, title, num_bins=10):
     plt.suptitle(plot_title, fontsize=20, fontweight="bold")
 
     plt.tight_layout()
+    plt.show()
+
+
+def plot_learning_rate_scheduling(
+    num_epochs=10,
+    num_warmup_epochs=2,
+    base_lr=0,
+    eta_min=0,
+):
+    sns.set_style("darkgrid")
+    lrs = []
+    for epoch in range(1, num_epochs + 1):
+        if epoch <= num_warmup_epochs:
+            lr = base_lr * epoch / num_warmup_epochs
+        else:
+            cosine_epoch = epoch - num_warmup_epochs
+            lr = (
+                eta_min
+                + (base_lr - eta_min)
+                * (1 + np.cos(np.pi * cosine_epoch / (num_epochs - num_warmup_epochs)))
+                / 2
+            )
+        lrs.append(lr)
+    plt.figure(figsize=(10, 6))
+    plt.plot(range(1, num_epochs + 1), lrs, marker="o")
+    plt.title("Learning Rate Schedule")
+    plt.xlabel("Epoch")
+    plt.ylabel("Learning Rate")
+    plt.ticklabel_format(axis="y", style="scientific")
+    plt.grid(True)
     plt.show()
