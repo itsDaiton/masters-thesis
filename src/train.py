@@ -1,6 +1,7 @@
 import torch
 from tqdm import tqdm
 from torch.utils.data import DataLoader
+from torch.nn.utils import clip_grad_norm_
 from utils.models_utils import get_last_layer
 from utils.data_utils import create_few_shot_subset
 from utils.train_utils import (
@@ -23,6 +24,7 @@ def train_model(
     with_distillation=False,
     teacher=None,
     few_shot=None,
+    gradient_clipping=False,
 ):
     if few_shot is not None:
         train = create_few_shot_subset(train, few_shot)
@@ -85,6 +87,13 @@ def train_model(
                 loss = criterion(outputs, labels)
 
             loss.backward()
+
+            if gradient_clipping:
+                clip_grad_norm_(
+                    filter(lambda p: p.requires_grad, model.parameters()),
+                    max_norm=config.gradient_clip_max_norm,
+                )
+
             optimizer.step()
 
             train_loss += loss.item()
