@@ -135,14 +135,20 @@ def plot_per_class_accuracies(per_class_accuracies, title, num_bins=10):
 def plot_learning_rate_scheduling(
     num_epochs=10,
     num_warmup_epochs=2,
-    base_lr=0,
-    eta_min=0,
+    linear_start_factor=0.1,
+    linear_end_factor=1.0,
+    base_lr=2e-5,
+    eta_min=2e-6,
 ):
     sns.set_style("darkgrid")
     lrs = []
     for epoch in range(1, num_epochs + 1):
         if epoch <= num_warmup_epochs:
-            lr = base_lr * epoch / num_warmup_epochs
+            lr = base_lr * (
+                linear_start_factor
+                + (linear_end_factor - linear_start_factor)
+                * (epoch / num_warmup_epochs)
+            )
         else:
             cosine_epoch = epoch - num_warmup_epochs
             lr = (
