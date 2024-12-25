@@ -11,6 +11,7 @@ from utils.train_utils import (
     print_zero_shot_results,
     calculate_hard_distillation,
     calculate_per_class_accuracy,
+    EarlyStopping,
 )
 
 
@@ -25,6 +26,7 @@ def train_model(
     with_distillation=False,
     teacher=None,
     few_shot=None,
+    use_early_stopping=False,
     gradient_clipping=False,
     scheduling=False,
 ):
@@ -34,6 +36,15 @@ def train_model(
     train_loader = DataLoader(train, batch_size=config.batch_size, shuffle=True)
     if use_val:
         val_loader = DataLoader(val, batch_size=config.batch_size)
+
+    if use_early_stopping:
+        if not use_val:
+            raise ValueError(
+                "Early stopping can only be used if a validation set is provided."
+            )
+        early_stopping = EarlyStopping(
+            patience=config.early_stopping.patience, delta=config.early_stopping.delta
+        )
 
     model.to(config.device)
 
@@ -96,7 +107,6 @@ def train_model(
                     _, teacher_predictions = torch.max(teacher_outputs, 1)
 
             outputs = model(images)
-
             _, predictions = torch.max(outputs, 1)
 
             if with_distillation and teacher is not None:
@@ -178,6 +188,16 @@ def train_model(
                     val_total_predictions,
                     val.get_labels(),
                 )
+
+                if use_early_stopping:
+                    early_stopping(avg_val_loss, model)
+                    if early_stopping.early_stop:
+                        print(
+                            "Early stopping triggered. Stopping training and saving the model..."
+                        )
+                        early_stopping.load_best_model(model)
+                        break
+
         if use_val:
             print_training_results(
                 epoch,

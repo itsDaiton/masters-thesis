@@ -1,6 +1,36 @@
 import torch
 
 
+class EarlyStopping:
+    def __init__(self, patience=3, delta=0.001):
+        self.patience = patience
+        self.delta = delta
+        self.best_score = None
+        self.early_stop = False
+        self.best_state = None
+        self.counter = 0
+
+    def __call__(self, val_loss, model):
+        score = -val_loss
+        if self.best_score is None:
+            self.best_score = score
+            self.best_state = model.state_dict()
+        elif score < self.best_score + self.delta:
+            self.counter += 1
+            if self.counter >= self.patience:
+                self.early_stop = True
+        else:
+            self.best_score = score
+            self.best_state = model.state_dict()
+            self.counter = 0
+
+    def load_best_model(self, model):
+        if self.best_state is not None:
+            model.load_state_dict(self.best_state)
+        else:
+            raise ValueError("No best model found.")
+
+
 def get_gpu_info():
     if torch.cuda.is_available():
         for i in range(torch.cuda.device_count()):
