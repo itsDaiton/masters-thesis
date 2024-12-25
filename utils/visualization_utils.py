@@ -1,3 +1,4 @@
+import random
 import torch
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -165,4 +166,25 @@ def plot_learning_rate_scheduling(
     plt.ylabel("Learning Rate")
     plt.ticklabel_format(axis="y", style="scientific")
     plt.grid(True)
+    plt.show()
+
+
+def visualize_dataset_sample(dataset, seed=None):
+    if seed is not None:
+        random.seed(seed)
+
+    sns.set_style("darkgrid")
+    _, axes = plt.subplots(3, 3, figsize=(12, 12))
+    axes = axes.flatten()
+
+    for ax in axes:
+        sample = random.choice(dataset.dataset)
+        image = sample["image"]
+        label = dataset.id2label[sample["label"]]
+
+        ax.imshow(image.resize((224, 224)))
+        ax.set_title(label)
+        ax.axis("off")
+
+    plt.tight_layout()
     plt.show()
