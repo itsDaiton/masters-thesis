@@ -2,6 +2,8 @@ import random
 from tqdm import tqdm
 from torch.utils.data import Dataset
 from datasets import Dataset as HFDataset, concatenate_datasets
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
 class ImageDataset(Dataset):
@@ -105,6 +107,20 @@ class ImageDataset(Dataset):
 
     def set_processor(self, new_processor):
         self.processor = new_processor
+
+    def plot_image(self, idx):
+        sns.set_style("darkgrid")
+        item = self.dataset[idx]
+        image, label = item["image"], item["label"]
+        label = self.id2label[label]
+
+        plt.imshow(image.resize((224, 224)))
+        plt.axis("off")
+        plt.title(label)
+
+        plt.grid(False)
+        plt.tight_layout()
+        plt.show()
 
     def augment_dataset(self, augmentations, percentage=0.5):
         if not 0 <= percentage <= 1:
