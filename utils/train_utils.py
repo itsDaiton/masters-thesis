@@ -1,4 +1,5 @@
 import torch
+from torchvision import transforms
 
 
 class EarlyStopping:
@@ -97,3 +98,17 @@ def get_top_5_accuracies(per_class_accuracies):
 def get_bottom_5_accuracies(per_class_accuracies):
     sorted_accuracies = sorted(per_class_accuracies.items(), key=lambda item: item[1])
     return sorted_accuracies[:5]
+
+
+def get_data_augmentations():
+    return transforms.Compose(
+        [
+            transforms.RandomHorizontalFlip(p=0.5),
+            transforms.RandomVerticalFlip(p=0.5),
+            transforms.RandomRotation(degrees=30),
+            transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
+            transforms.ColorJitter(
+                brightness=0.2, contrast=0.2, saturation=0.2, hue=0.2
+            ),
+        ]
+    )
