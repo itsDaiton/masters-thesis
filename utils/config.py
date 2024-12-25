@@ -71,7 +71,3 @@ class Config:
         settings["gradient_clipping"] = self.gradient_clipping.get_clipping_settings()
         settings["scheduler"] = self.scheduler.get_scheduler_settings()
         return settings
-
-
-config = Config()
-print(config.get_settings())
