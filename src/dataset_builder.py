@@ -134,6 +134,10 @@ class ImageDataset(Dataset):
 
         augmented_data = {key: [] for key in self.dataset.features}
 
+        images = []
+        labels = []
+        ids = []
+
         for idx in tqdm(indices, desc="Generating new images...", leave=True):
             item = self.dataset[idx]
             image, label = item["image"], item["label"]
@@ -141,20 +145,22 @@ class ImageDataset(Dataset):
             if image.mode == "L":
                 image = image.convert("RGB")
 
-            augmented_image = augmentations(image)
-
-            augmented_data["image"].append(augmented_image)
-            augmented_data["label"].append(label)
-
+            images.append(image)
+            labels.append(label)
             if "image_id" in self.dataset.features:
                 image_id = item.get("image_id", f"aug_{idx}")
-                augmented_data["image_id"].append(image_id)
+                ids.append(image_id)
+
+        augmented_images = [augmentations(image) for image in images]
+        augmented_data["image"].extend(augmented_images)
+        augmented_data["label"].extend(labels)
+        if "image_id" in self.dataset.features:
+            augmented_data["image_id"].extend(ids)
 
         features = self.dataset.features
         augmented_dataset = HFDataset.from_dict(augmented_data, features=features)
-
         self.dataset = concatenate_datasets([self.dataset, augmented_dataset])
 
         print(
-            "Augmentation completed. Total number of new images generated: {num_samples}"
+            f"Augmentation completed. Total number of new images generated: {num_samples}"
         )
