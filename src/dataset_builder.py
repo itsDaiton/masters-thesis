@@ -134,7 +134,7 @@ class ImageDataset(Dataset):
 
         augmented_data = {key: [] for key in self.dataset.features}
 
-        for idx in tqdm(indices, desc="Generating new images...", leave=False):
+        for idx in tqdm(indices, desc="Generating new images...", leave=True):
             item = self.dataset[idx]
             image, label = item["image"], item["label"]
 
@@ -155,4 +155,6 @@ class ImageDataset(Dataset):
 
         self.dataset = concatenate_datasets([self.dataset, augmented_dataset])
 
-        return f"Augmentation completed. Total number of new images generated: {num_samples}."
+        print(
+            "Augmentation completed. Total number of new images generated: {num_samples}"
+        )
