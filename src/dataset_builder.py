@@ -134,43 +134,25 @@ class ImageDataset(Dataset):
 
         augmented_data = {key: [] for key in self.dataset.features}
 
-        with tqdm(
-            total=num_samples,
-            desc="Generating new samples...",
-            dynamic_ncols=True,
-            leave=False,
-        ) as pbar:
-            for idx in indices:
-                item = self.dataset[idx]
-                image, label = item["image"], item["label"]
+        for idx in tqdm(indices, desc="Generating new images...", leave=False):
+            item = self.dataset[idx]
+            image, label = item["image"], item["label"]
 
-                if image.mode == "L":
-                    image = image.convert("RGB")
+            if image.mode == "L":
+                image = image.convert("RGB")
 
-                augmented_image = augmentations(image)
+            augmented_image = augmentations(image)
 
-                augmented_data["image"].append(augmented_image)
-                augmented_data["label"].append(label)
+            augmented_data["image"].append(augmented_image)
+            augmented_data["label"].append(label)
 
-                if "image_id" in self.dataset.features:
-                    image_id = item.get("image_id", f"aug_{idx}")
-                    augmented_data["image_id"].append(image_id)
+            if "image_id" in self.dataset.features:
+                image_id = item.get("image_id", f"aug_{idx}")
+                augmented_data["image_id"].append(image_id)
 
-                pbar.update(1)
+        features = self.dataset.features
+        augmented_dataset = HFDataset.from_dict(augmented_data, features=features)
 
-            tqdm.write("Creating augmented dataset...")
-            features = self.dataset.features
-            augmented_dataset = HFDataset.from_dict(augmented_data, features=features)
+        self.dataset = concatenate_datasets([self.dataset, augmented_dataset])
 
-            with tqdm(
-                total=1,
-                desc="Concatenating new samples...",
-                dynamic_ncols=True,
-                leave=True,
-            ) as pbar:
-                self.dataset = concatenate_datasets([self.dataset, augmented_dataset])
-                pbar.update(1)
-
-            tqdm.write(
-                f"Augmentation completed. Total number of new images generated: {num_samples}."
-            )
+        return f"Augmentation completed. Total number of new images generated: {num_samples}."
