@@ -15,7 +15,7 @@ class ImageDataset(Dataset):
     def __init__(
         self,
         dataset,
-        processor,
+        processor=None,
         tokenizer=None,
         create_captions=False,
         prompt=None,
@@ -49,6 +49,9 @@ class ImageDataset(Dataset):
 
         if image.mode == "L":
             image = image.convert("RGB")
+
+        if self.processor is None:
+            raise ValueError("Processor is not provided.")
 
         processed_image = self.processor(images=image, return_tensors="pt")[
             "pixel_values"
