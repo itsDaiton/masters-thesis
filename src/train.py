@@ -121,7 +121,7 @@ def train_model(
             if gradient_clipping:
                 clip_grad_norm_(
                     filter(lambda p: p.requires_grad, model.parameters()),
-                    max_norm=config.gradient_clip_max_norm,
+                    max_norm=config.gradient_clipping.max_norm,
                 )
 
             optimizer.step()
