@@ -1,7 +1,4 @@
-import random
-from tqdm import tqdm
 from torch.utils.data import Dataset
-from datasets import Dataset as HFDataset, concatenate_datasets
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -125,42 +122,20 @@ class ImageDataset(Dataset):
         plt.tight_layout()
         plt.show()
 
-    def augment_dataset(self, augmentations, percentage=0.5):
-        if not 0 <= percentage <= 1:
-            raise ValueError("Percentage must be between 0 and 1")
+    def augment_dataset(self, augmentations, batch_size=64):
+        def augment_batch(batch):
+            for i in range(len(batch["image"])):
+                image = batch["image"][i]
+                batch["image"][i] = augmentations(image)
+            return batch
 
-        num_samples = int(len(self.dataset) * percentage)
-        indices = random.sample(range(len(self.dataset)), num_samples)
-
-        augmented_data = {key: [] for key in self.dataset.features}
-
-        images = []
-        labels = []
-        ids = []
-
-        for idx in tqdm(indices, desc="Generating new images...", leave=True):
-            item = self.dataset[idx]
-            image, label = item["image"], item["label"]
-
-            if image.mode == "L":
-                image = image.convert("RGB")
-
-            images.append(image)
-            labels.append(label)
-            if "image_id" in self.dataset.features:
-                image_id = item.get("image_id", f"aug_{idx}")
-                ids.append(image_id)
-
-        augmented_images = [augmentations(image) for image in images]
-        augmented_data["image"].extend(augmented_images)
-        augmented_data["label"].extend(labels)
-        if "image_id" in self.dataset.features:
-            augmented_data["image_id"].extend(ids)
-
-        features = self.dataset.features
-        augmented_dataset = HFDataset.from_dict(augmented_data, features=features)
-        self.dataset = concatenate_datasets([self.dataset, augmented_dataset])
+        self.dataset = self.dataset.map(
+            augment_batch,
+            batched=True,
+            batch_size=batch_size,
+            load_from_cache_file=False,
+        )
 
         print(
-            f"Augmentation completed. Total number of new images generated: {num_samples}"
+            f"Augmentation completed. Total number of images augmented: {len(self.dataset)}"
         )
