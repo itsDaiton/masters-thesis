@@ -73,17 +73,17 @@ def train_model(
             optimizer=optimizer,
             start_factor=0.1,
             end_factor=1,
-            total_iters=config.scheduler_config.warmup_epochs,
+            total_iters=config.scheduler.warmup_epochs,
         )
         cosine_scheduler = CosineAnnealingLR(
             optimizer=optimizer,
-            T_max=config.num_epochs - config.scheduler_config.warmup_epochs,
-            eta_min=config.scheduler_config.eta_min,
+            T_max=config.num_epochs - config.scheduler.warmup_epochs,
+            eta_min=config.scheduler.eta_min,
         )
         scheduler = SequentialLR(
             optimizer=optimizer,
             schedulers=[warmup_scheduler, cosine_scheduler],
-            milestones=[config.scheduler_config.warmup_epochs],
+            milestones=[config.scheduler.warmup_epochs],
         )
 
     for epoch in range(config.num_epochs):
