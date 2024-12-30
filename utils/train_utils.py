@@ -108,10 +108,11 @@ def get_data_augmentations():
             transforms.RandomVerticalFlip(p=0.5),
             transforms.RandomRotation(degrees=45),
             transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), scale=(0.8, 1.2)),
-            transforms.RandomErasing(p=0.5, scale=(0.02, 0.4), ratio=(0.3, 3.3)),
+            transforms.GaussianBlur(kernel_size=5, sigma=(0.1, 2.0)),
             transforms.ColorJitter(
                 brightness=0.3, contrast=0.3, saturation=0.3, hue=0.3
             ),
-            transforms.GaussianBlur(kernel_size=5, sigma=(0.1, 2.0)),
+            transforms.ToTensor(),
+            transforms.RandomErasing(p=0.5, scale=(0.02, 0.4), ratio=(0.3, 3.3)),
         ]
     )
