@@ -21,7 +21,7 @@ max-line-length=100
 
 [DESIGN]
 max-args=15
-max-attributes=10
+max-attributes=12
 max-positional-arguments=15
 max-locals=50
 max-statements=100
