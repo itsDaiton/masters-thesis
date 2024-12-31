@@ -50,6 +50,7 @@ class Config:
         optimizer=Adam,
         criterion=CrossEntropyLoss(),
         weight_decay=1e-4,
+        dropout_rate=0.1,
         early_stopping=EarlyStoppingConfig(),
         gradient_clipping=GradientClippingConfig(),
         scheduler=SchedulerConfig(),
@@ -61,6 +62,7 @@ class Config:
         self.num_epochs = num_epochs
         self.optimizer = optimizer
         self.weight_decay = weight_decay
+        self.dropout_rate = dropout_rate
         self.early_stopping = early_stopping
         self.gradient_clipping = gradient_clipping
         self.scheduler = scheduler

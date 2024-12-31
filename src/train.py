@@ -192,6 +192,22 @@ def train_model(
                 if use_early_stopping:
                     early_stopping(avg_val_loss, model)
                     if early_stopping.early_stop:
+                        if use_val:
+                            print_training_results(
+                                epoch,
+                                config.num_epochs,
+                                avg_train_loss,
+                                avg_train_accuracy,
+                                avg_val_loss,
+                                avg_val_accuracy,
+                            )
+                        else:
+                            print_training_results(
+                                epoch,
+                                config.num_epochs,
+                                avg_train_loss,
+                                avg_train_accuracy,
+                            )
                         print(
                             "Early stopping triggered. Stopping training and saving the model..."
                         )

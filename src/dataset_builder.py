@@ -137,5 +137,5 @@ class ImageDataset(Dataset):
         )
 
         print(
-            f"Augmentation completed. Total number of images augmented: {len(self.dataset)}"
+            f"Augmentation completed. Total number of new samples generated: {len(self.dataset)}"
         )
