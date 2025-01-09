@@ -148,7 +148,7 @@ def plot_learning_rate_scheduling(
             lr = base_lr * (
                 linear_start_factor
                 + (linear_end_factor - linear_start_factor)
-                * (epoch / num_warmup_epochs)
+                * ((epoch - 1) / num_warmup_epochs)
             )
         else:
             cosine_epoch = epoch - num_warmup_epochs
