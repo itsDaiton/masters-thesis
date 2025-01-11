@@ -14,11 +14,25 @@ class Backbone(nn.Module):
             ignore_mismatched_sizes=True,
         )
         if dropout:
-            in_features = self.backbone.classifier.in_features
-            self.backbone.classifier = nn.Sequential(
-                nn.Dropout(p=dropout_rate),
-                nn.Linear(in_features, num_classes),
-            )
+            if model_name == model_names["RegNet"]:
+                in_features = self.backbone.classifier[1].in_features
+                self.backbone.classifier = nn.Sequential(
+                    nn.Flatten(start_dim=1, end_dim=-1),
+                    nn.Dropout(p=dropout_rate),
+                    nn.Linear(in_features, num_classes),
+                )
+            elif model_name == model_names["DeiT"]:
+                in_features = self.backbone.cls_classifier.in_features
+                self.backbone.cls_classifier = nn.Sequential(
+                    nn.Dropout(p=dropout_rate),
+                    nn.Linear(in_features, num_classes),
+                )
+            else:
+                in_features = self.backbone.classifier.in_features
+                self.backbone.classifier = nn.Sequential(
+                    nn.Dropout(p=dropout_rate),
+                    nn.Linear(in_features, num_classes),
+                )
 
     def forward(self, x):
         outputs = self.backbone(x)
