@@ -49,7 +49,12 @@ def visualize_zero_shot_predict(
     ax2.set_yticks([])
     ax2.invert_yaxis()
     ax2.title.set_text(string)
+
+    max_width = 45
+
     for patch, sorted_label in zip(ax2.patches, sorted_labels):
+        if len(sorted_label) > max_width:
+            sorted_label = sorted_label[:max_width] + "..."
         ax2.text(
             1.5,
             patch.get_y() + patch.get_height() / 2,
