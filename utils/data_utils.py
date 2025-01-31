@@ -53,3 +53,7 @@ def create_few_shot_subset(dataset, k):
 def create_accuracy_dict(results, labels):
     accuracy_dict = dict(zip(labels, results))
     return accuracy_dict
+
+
+def bold_string(string):
+    return f"\033[1m{string}\033[0m"
