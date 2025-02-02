@@ -193,3 +193,64 @@ def visualize_dataset_sample(dataset, seed=None):
 
     plt.tight_layout()
     plt.show()
+
+
+def plot_results_bar(
+    dataframe, rows, columns, title, width=0.2, x_labels="Datasets", y_labels="Accuracy"
+):
+    sns.set_style("darkgrid")
+
+    x = np.arange(len(rows))
+    _, ax = plt.subplots(figsize=(12, 6))
+    num_columns = len(columns)
+    offsets = np.linspace(
+        -((num_columns - 1) / 2) * width, ((num_columns - 1) / 2) * width, num_columns
+    )
+    for offset, col in zip(offsets, columns):
+        ax.bar(x + offset, dataframe[col], width, label=col)
+
+    ax.set_xlabel(x_labels)
+    ax.set_ylabel(y_labels)
+    ax.set_xticks(x)
+    ax.set_xticklabels(rows)
+    ax.legend()
+
+    plt.suptitle(
+        title,
+        fontsize=20,
+        fontweight="bold",
+    )
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_relative_change(
+    df,
+    rows,
+    columns,
+    title,
+    width=0.2,
+    x_labels="Placeholder",
+    y_labels="Relative Change (%)",
+):
+    sns.set_style("darkgrid")
+
+    x = np.arange(len(rows))
+    _, ax = plt.subplots(figsize=(12, 6))
+
+    for i, col in enumerate(columns):
+        ax.bar(x + width * i, df[col], width, label=col)
+
+    ax.set_xlabel(x_labels)
+    ax.set_ylabel(y_labels)
+    ax.set_xticks(x)
+    ax.set_xticklabels(rows)
+    ax.legend()
+
+    plt.suptitle(
+        title,
+        fontsize=20,
+        fontweight="bold",
+    )
+    plt.tight_layout()
+    plt.show()
