@@ -1,9 +1,0 @@
-{
-  "device": "cuda",
-  "criterion": "CrossEntropyLoss()",
-  "batch_size": 8,
-  "lr": 1e-4,
-  "num_epochs": 10,
-  "optimizer": "torch.optim.adamw.AdamW",
-  "weight_decay": 0
-}
