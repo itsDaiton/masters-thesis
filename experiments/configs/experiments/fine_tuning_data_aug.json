@@ -1,0 +1,19 @@
+{
+  "device": "cuda",
+  "criterion": "CrossEntropyLoss()",
+  "batch_size": 64,
+  "lr": 5e-5,
+  "num_epochs": 15,
+  "optimizer": "torch.optim.adamw.AdamW",
+  "weight_decay": 0.01,
+  "dropout_rate": 0.5,
+  "early_stopping": { "enabled": "True", "patience": 5, "delta": 0.005 },
+  "gradient_clipping": { "enabled": "True", "max_norm": 2.0 },
+  "scheduler": {
+    "enabled": "True",
+    "warmup_epochs": 3,
+    "eta_min": 1e-7,
+    "linear_start_factor": 0.1,
+    "linear_end_factor": 1.0
+  }
+}
