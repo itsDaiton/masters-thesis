@@ -1,5 +1,7 @@
 # Exploration and Comparison of Transformers for Image Classification
 
+Repo structure (TODO)
+```
 ├── 📂 .github
 │   └── 📂 workflows
 │       └── 📄 pipeline.yml
@@ -72,7 +74,7 @@
     ├── 📄 models_utils.py
     ├── 📄 train_utils.py
     └── 📄 visualization_utils.py
-
+```
 
 ## Description
 TBD
