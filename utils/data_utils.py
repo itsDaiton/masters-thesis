@@ -6,8 +6,6 @@ from data.mappings.label_mappings import pcam, sun397
 
 
 def clean_labels(dataset, name):
-    """Custom label cleaning function specific for each dataset."""
-
     for split in dataset.keys():
         labels = dataset[split].features["label"].names
         labels_cleaned = []

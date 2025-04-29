@@ -4,8 +4,6 @@ from utils.models_utils import model_names
 
 
 class Backbone(nn.Module):
-    """Base class for all backbone models used - ViT, DeiT, Swin, RegNet (for distillation)."""
-
     def __init__(self, model_name, num_classes, dropout=False, dropout_rate=0.1):
         super(Backbone, self).__init__()
         self.backbone = AutoModelForImageClassification.from_pretrained(
@@ -40,8 +38,6 @@ class Backbone(nn.Module):
 
 
 class CLIP(nn.Module):
-    """CLIP model pre-trained on YFCC100M dataset."""
-
     def __init__(
         self,
         model_name=model_names["CLIP"],
