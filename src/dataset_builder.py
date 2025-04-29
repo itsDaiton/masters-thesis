@@ -4,11 +4,6 @@ import matplotlib.pyplot as plt
 
 
 class ImageDataset(Dataset):
-    """
-    Class for a custom image classification dataset buidling.
-    The class has an option to create captions for each image (CLIP).
-    """
-
     def __init__(
         self,
         dataset,
