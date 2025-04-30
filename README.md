@@ -1,6 +1,15 @@
 # Exploration and Comparison of Transformers for Image Classification
+This repostiry contains the complete source code for the  master thesis ***Exploration and Comparison of Transformers for Image Classification*** by David Poslušný at [***Faculty of Informatics and Statistics of Prague University of Economics and Business***](https://fis.vse.cz).
 
-Repo structure (TODO)
+This thesis focuses on the research and application of Transformers in image classification. The main goal is to evaluate the performance of selected Transformer models on diverse image classification datasets in a series of hand-crafted transfer learning experiments. The analysis results are compared and further discussed in the context of available literature.
+
+The first part of the thesis presents a theoretical background of Transformers. It contains an overview of the original architecture and its adaptation to computer vision (CV). An extensive literature survey of Transformers in CV is performed, focusing primarily on image classification. The survey provides a basis for model selection for the experiments. The second part reviews available image classification datasets to select diverse, domain-specific challenges for the models. Subsequently, experiments based on transfer learning are designed to evaluate and compare the models in multiple setups. The thesis concludes by applying the selected models to the unseen data. The results are then evaluated, analyzed, and further discussed based on the context of the individual experiments.
+
+The primary contribution of the thesis is an in-depth evaluation of key Transformer models adopted for image classification on diverse, domain-specific datasets. The complex experiments analyze the models in different conditions and compare their generalization performance outside of the training distribution. The outcome serves as a summary and review of the most important Transformer-based architectures for image classification.
+
+
+
+## Repository Structure
 ```
 ├── 📂 .github
 │   └── 📂 workflows
