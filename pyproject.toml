@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "masters-thesis"
-version = "0.1.0"
-description = "Master's thesis repository."
+version = "1.0.0"
+description = "Exploration and Comparison of Transformers for Image Classification."
 authors = ["David Poslušný <david.poslusny@gmail.com>"]
 
 [tool.poetry.dependencies]
